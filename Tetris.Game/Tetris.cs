@@ -110,12 +110,16 @@ namespace Tetris.Game
             OnChangedBlocks(initialBlocks);
         }
 
+        /// <summary>
+        /// Initializes the tetromino handler. This is called on every new game
+        /// </summary>
         private void InitilizeTetrominoHandler()
         {
             tetrominoHandler = new TetrominoHandler(deck);
             var initialResult = tetrominoHandler.Initialize();
             OnNextTetromino(initialResult.NextTetromino);
             OnChangedBlocks(initialResult.ChangedBlocks);
+            OnGhostBlocks(initialResult.GhostBlocks);
         }
 
         /// <summary>
@@ -196,12 +200,35 @@ namespace Tetris.Game
                 ProcessVanishRowResult(moveDownResult.VanishRowResult, hardDrop);
             }
 
+            if (moveDownResult.GhostBlocks != null)
+            {
+                OnGhostBlocks(moveDownResult.GhostBlocks);
+            }
+
             if (moveDownResult.NextTetromino != null)
             {
                 OnNextTetromino(moveDownResult.NextTetromino);
                 return true;
             }
             return false;
+        }
+
+        /// <summary>
+        /// Actives or deactives the ghost blocks
+        /// </summary>
+        /// <param name="value"></param>
+        private void SetGhostValue(bool value)
+        {
+            if (value)
+            {
+                var ghostBlocks = tetrominoHandler.ActiveGhostBlocks();
+                OnGhostBlocks(ghostBlocks.ChangedBlocks);
+            }
+            else
+            {
+                var ghostBlocks = tetrominoHandler.DeactiveGhostBlocks();
+                OnGhostBlocks(ghostBlocks.ChangedBlocks);
+            }
         }
 
         #endregion
@@ -248,6 +275,11 @@ namespace Tetris.Game
         /// </summary>
         public event EventHandler GameOver;
 
+        /// <summary>
+        /// Occures when ghost blocks change
+        /// </summary>
+        public event EventHandler<BlockEventArgs> GhostBlocks;
+
         #endregion
 
         #region Public Properties
@@ -256,6 +288,15 @@ namespace Tetris.Game
         /// Game Level
         /// </summary>
         public Level Level { get; set; }
+
+        /// <summary>
+        /// Indicates whether ghost blocks are visible or not
+        /// </summary>
+        public bool GhostBlocksVisible
+        {
+            get { return tetrominoHandler.GhostBlocksActiveStatus; }
+            set { SetGhostValue(value); }
+        }
 
         #endregion
 
@@ -283,6 +324,10 @@ namespace Tetris.Game
                 var moveResult = tetrominoHandler.MoveRight();
                 if (moveResult != null)
                 {
+                    if (moveResult.GhostBlocks != null)
+                    {
+                        OnGhostBlocks(moveResult.GhostBlocks);
+                    }
                     OnChangedBlocks(moveResult.ChangedBlocks);
                 }
             }
@@ -302,6 +347,10 @@ namespace Tetris.Game
                 var moveResult = tetrominoHandler.MoveLeft();
                 if (moveResult != null)
                 {
+                    if (moveResult.GhostBlocks != null)
+                    {
+                        OnGhostBlocks(moveResult.GhostBlocks);
+                    }
                     OnChangedBlocks(moveResult.ChangedBlocks);
                 }
             }
@@ -336,6 +385,10 @@ namespace Tetris.Game
                 var rotateResult = tetrominoHandler.Rotate();
                 foreach (var changeResult in rotateResult)
                 {
+                    if (changeResult.GhostBlocks != null)
+                    {
+                        OnGhostBlocks(changeResult.GhostBlocks);
+                    }
                     OnChangedBlocks(changeResult.ChangedBlocks);
                 }
             }
@@ -416,6 +469,7 @@ namespace Tetris.Game
         {
             RowVanish?.Invoke(this, new BlockEventArgs(vanishedRowsBlocks));
         }
+
         /// <summary>
         /// Invokes the NextTetromino event
         /// </summary>
@@ -441,6 +495,16 @@ namespace Tetris.Game
         protected virtual void OnGameOver()
         {
             GameOver?.Invoke(this, EventArgs.Empty);
+        }
+
+        /// <summary>
+        /// Invokes the GhostBlocks event
+        /// </summary>
+        /// <param name="ghostBlocks"></param>
+        public virtual void OnGhostBlocks(Block[] ghostBlocks)
+        {
+            var checkedBlocks = RemoveOutBoundBlocks(ghostBlocks);
+            GhostBlocks?.Invoke(this, new BlockEventArgs(checkedBlocks));
         }
 
         #endregion

@@ -30,6 +30,7 @@ namespace Tetris.Gui
         private readonly Color vanishColor = Color.DarkOrange;
         private readonly Color visibleColor = Color.Black;
         private readonly Color hiddenColor = Color.White;
+        private readonly Color ghostColor = Color.LightGray;
 
         private Game.Tetris tetrisGame;
 
@@ -113,6 +114,21 @@ namespace Tetris.Gui
             else
             {
                 DrawChangedBlocks(e);
+            }
+        }
+
+        private void TetrisGame_GhostBlocks(object sender, BlockEventArgs e)
+        {
+            if (InvokeRequired)
+            {
+                BeginInvoke(new Action(() =>
+                {
+                    DrawGhostBlocks(e);
+                }));
+            }
+            else
+            {
+                DrawGhostBlocks(e);
             }
         }
 
@@ -208,6 +224,10 @@ namespace Tetris.Gui
                     Application.Exit();
                     break;
 
+                case Keys.G:
+                    tetrisGame.GhostBlocksVisible = !tetrisGame.GhostBlocksVisible;
+                    break;
+
             }
         }
 
@@ -278,6 +298,18 @@ namespace Tetris.Gui
                 foreach (var block in e.Blocks)
                 {
                     DrawSingleBlock(graphics, block.X, block.Y, visibleColor);
+                }
+            }
+            gameDeckPicBox.Refresh();
+        }
+
+        private void DrawGhostBlocks(BlockEventArgs e)
+        {
+            using (var graphics = Graphics.FromImage(gameDeckBitmap))
+            {
+                foreach (var block in e.Blocks)
+                {
+                    DrawSingleBlock(graphics, block.X, block.Y, block.Status == BlockStatus.Visible ? ghostColor : hiddenColor);
                 }
             }
             gameDeckPicBox.Refresh();
@@ -371,6 +403,7 @@ namespace Tetris.Gui
             tetrisGame.NextTetromino += TetrisGame_NextTetromino;
             tetrisGame.RowVanish += TetrisGame_RowVanish;
             tetrisGame.Score += TetrisGame_Score;
+            tetrisGame.GhostBlocks += TetrisGame_GhostBlocks;
             DrawBoarder();
             tetrisGame.Start();
         }

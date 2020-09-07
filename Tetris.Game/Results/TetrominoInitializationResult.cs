@@ -19,6 +19,8 @@
         /// </summary>
         public Block[] NextTetromino { get; set; }
 
+        public Block[] GhostBlocks { get; set; }
+
         #endregion
 
     }

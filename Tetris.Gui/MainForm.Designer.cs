@@ -57,6 +57,8 @@
             this.rotateLbl = new System.Windows.Forms.Label();
             this.rightArrowKeyLbl = new System.Windows.Forms.Label();
             this.upArrowKeyLbl = new System.Windows.Forms.Label();
+            this.ghostOnOffLbl = new System.Windows.Forms.Label();
+            this.gKeyLbl = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.gameDeckPicBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nextTetrominoPicBox)).BeginInit();
             this.scoreGrp.SuspendLayout();
@@ -171,12 +173,14 @@
             this.shortcutsGrp.Controls.Add(this.restartGameLbl);
             this.shortcutsGrp.Controls.Add(this.resumeGameLbl);
             this.shortcutsGrp.Controls.Add(this.pauseGameLbl);
+            this.shortcutsGrp.Controls.Add(this.ghostOnOffLbl);
             this.shortcutsGrp.Controls.Add(this.hardDropLbl);
             this.shortcutsGrp.Controls.Add(this.moveDownLbl);
             this.shortcutsGrp.Controls.Add(this.escapeKeyLbl);
             this.shortcutsGrp.Controls.Add(this.enterKeyLbl);
             this.shortcutsGrp.Controls.Add(this.rKeyLbl);
             this.shortcutsGrp.Controls.Add(this.moveLeftLbl);
+            this.shortcutsGrp.Controls.Add(this.gKeyLbl);
             this.shortcutsGrp.Controls.Add(this.pKeyLbl);
             this.shortcutsGrp.Controls.Add(this.spaceKeyLbl);
             this.shortcutsGrp.Controls.Add(this.downArrowKeyLbl);
@@ -187,7 +191,7 @@
             this.shortcutsGrp.Controls.Add(this.upArrowKeyLbl);
             this.shortcutsGrp.Location = new System.Drawing.Point(744, 40);
             this.shortcutsGrp.Name = "shortcutsGrp";
-            this.shortcutsGrp.Size = new System.Drawing.Size(238, 263);
+            this.shortcutsGrp.Size = new System.Drawing.Size(238, 288);
             this.shortcutsGrp.TabIndex = 1;
             this.shortcutsGrp.TabStop = false;
             // 
@@ -195,7 +199,7 @@
             // 
             this.exitGameLbl.AutoSize = true;
             this.exitGameLbl.Font = new System.Drawing.Font("Segoe UI Semibold", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
-            this.exitGameLbl.Location = new System.Drawing.Point(21, 225);
+            this.exitGameLbl.Location = new System.Drawing.Point(21, 250);
             this.exitGameLbl.Name = "exitGameLbl";
             this.exitGameLbl.Size = new System.Drawing.Size(63, 15);
             this.exitGameLbl.TabIndex = 0;
@@ -205,7 +209,7 @@
             // 
             this.restartGameLbl.AutoSize = true;
             this.restartGameLbl.Font = new System.Drawing.Font("Segoe UI Semibold", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
-            this.restartGameLbl.Location = new System.Drawing.Point(21, 200);
+            this.restartGameLbl.Location = new System.Drawing.Point(21, 225);
             this.restartGameLbl.Name = "restartGameLbl";
             this.restartGameLbl.Size = new System.Drawing.Size(80, 15);
             this.restartGameLbl.TabIndex = 0;
@@ -215,7 +219,7 @@
             // 
             this.resumeGameLbl.AutoSize = true;
             this.resumeGameLbl.Font = new System.Drawing.Font("Segoe UI Semibold", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
-            this.resumeGameLbl.Location = new System.Drawing.Point(21, 175);
+            this.resumeGameLbl.Location = new System.Drawing.Point(21, 200);
             this.resumeGameLbl.Name = "resumeGameLbl";
             this.resumeGameLbl.Size = new System.Drawing.Size(86, 15);
             this.resumeGameLbl.TabIndex = 0;
@@ -225,7 +229,7 @@
             // 
             this.pauseGameLbl.AutoSize = true;
             this.pauseGameLbl.Font = new System.Drawing.Font("Segoe UI Semibold", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
-            this.pauseGameLbl.Location = new System.Drawing.Point(21, 150);
+            this.pauseGameLbl.Location = new System.Drawing.Point(21, 175);
             this.pauseGameLbl.Name = "pauseGameLbl";
             this.pauseGameLbl.Size = new System.Drawing.Size(75, 15);
             this.pauseGameLbl.TabIndex = 0;
@@ -255,7 +259,7 @@
             // 
             this.escapeKeyLbl.AutoSize = true;
             this.escapeKeyLbl.Font = new System.Drawing.Font("Segoe UI Semibold", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
-            this.escapeKeyLbl.Location = new System.Drawing.Point(118, 225);
+            this.escapeKeyLbl.Location = new System.Drawing.Point(118, 250);
             this.escapeKeyLbl.Name = "escapeKeyLbl";
             this.escapeKeyLbl.Size = new System.Drawing.Size(65, 15);
             this.escapeKeyLbl.TabIndex = 0;
@@ -265,7 +269,7 @@
             // 
             this.enterKeyLbl.AutoSize = true;
             this.enterKeyLbl.Font = new System.Drawing.Font("Segoe UI Semibold", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
-            this.enterKeyLbl.Location = new System.Drawing.Point(118, 200);
+            this.enterKeyLbl.Location = new System.Drawing.Point(118, 225);
             this.enterKeyLbl.Name = "enterKeyLbl";
             this.enterKeyLbl.Size = new System.Drawing.Size(56, 15);
             this.enterKeyLbl.TabIndex = 0;
@@ -275,7 +279,7 @@
             // 
             this.rKeyLbl.AutoSize = true;
             this.rKeyLbl.Font = new System.Drawing.Font("Segoe UI Semibold", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
-            this.rKeyLbl.Location = new System.Drawing.Point(118, 175);
+            this.rKeyLbl.Location = new System.Drawing.Point(118, 200);
             this.rKeyLbl.Name = "rKeyLbl";
             this.rKeyLbl.Size = new System.Drawing.Size(36, 15);
             this.rKeyLbl.TabIndex = 0;
@@ -295,7 +299,7 @@
             // 
             this.pKeyLbl.AutoSize = true;
             this.pKeyLbl.Font = new System.Drawing.Font("Segoe UI Semibold", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
-            this.pKeyLbl.Location = new System.Drawing.Point(118, 150);
+            this.pKeyLbl.Location = new System.Drawing.Point(118, 175);
             this.pKeyLbl.Name = "pKeyLbl";
             this.pKeyLbl.Size = new System.Drawing.Size(36, 15);
             this.pKeyLbl.TabIndex = 0;
@@ -371,6 +375,26 @@
             this.upArrowKeyLbl.TabIndex = 0;
             this.upArrowKeyLbl.Text = "Up Arrow Key";
             // 
+            // ghostOnOffLbl
+            // 
+            this.ghostOnOffLbl.AutoSize = true;
+            this.ghostOnOffLbl.Font = new System.Drawing.Font("Segoe UI Semibold", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            this.ghostOnOffLbl.Location = new System.Drawing.Point(21, 150);
+            this.ghostOnOffLbl.Name = "ghostOnOffLbl";
+            this.ghostOnOffLbl.Size = new System.Drawing.Size(82, 15);
+            this.ghostOnOffLbl.TabIndex = 0;
+            this.ghostOnOffLbl.Text = "Ghost On/Off:";
+            // 
+            // gKeyLbl
+            // 
+            this.gKeyLbl.AutoSize = true;
+            this.gKeyLbl.Font = new System.Drawing.Font("Segoe UI Semibold", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            this.gKeyLbl.Location = new System.Drawing.Point(118, 150);
+            this.gKeyLbl.Name = "gKeyLbl";
+            this.gKeyLbl.Size = new System.Drawing.Size(37, 15);
+            this.gKeyLbl.TabIndex = 0;
+            this.gKeyLbl.Text = "G Key";
+            // 
             // MainFrom
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
@@ -434,6 +458,8 @@
         private System.Windows.Forms.Label enterKeyLbl;
         private System.Windows.Forms.Label exitGameLbl;
         private System.Windows.Forms.Label escapeKeyLbl;
+        private System.Windows.Forms.Label ghostOnOffLbl;
+        private System.Windows.Forms.Label gKeyLbl;
     }
 }
 

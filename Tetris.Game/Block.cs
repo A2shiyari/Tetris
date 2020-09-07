@@ -10,6 +10,29 @@
         #region Ctor
 
         /// <summary>
+        /// Creates a new instance of the block with the default values of an existing block
+        /// </summary>
+        /// <param name="block"></param>
+        public Block(Block block)
+        {
+            X = block.X;
+            Y = block.Y;
+            Status = block.Status;
+        }
+
+        /// <summary>
+        /// Creates a new instance of the block with the default values of an existing block and a new status
+        /// </summary>
+        /// <param name="block"></param>
+        /// <param name="status"></param>
+        public Block(Block block , BlockStatus status)
+        {
+            X = block.X;
+            Y = block.Y;
+            Status = status;
+        }
+
+        /// <summary>
         /// Creates a new instance of the block with default hidden status
         /// </summary>
         /// <param name="x">X postion of the block</param>

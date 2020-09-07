@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
 using Tetris.Game.Results;
 using Tetris.Game.Tetriminoes;
 
@@ -33,6 +36,11 @@ namespace Tetris.Game
         /// </summary>
         private readonly Deck deck;
 
+        /// <summary>
+        /// Ghost blocks of the game
+        /// </summary>
+        private Block[] ghostBlocks;
+
         #endregion
 
         #region Private Methods
@@ -63,6 +71,20 @@ namespace Tetris.Game
             }
         }
 
+        private ChangeResult CalculateGhostBlock(ChangeResult moveResult)
+        {
+            if (moveResult == null || !GhostBlocksActiveStatus) return moveResult;
+            var changedGhostBlocks = new List<Block>();
+            foreach (var ghostBlock in ghostBlocks)
+            {
+                changedGhostBlocks.Add(new Block(ghostBlock, BlockStatus.Hidden));
+            }
+            ghostBlocks = deck.GetGhostBlocks(current.VisibleBlocks);
+            changedGhostBlocks.AddRange(ghostBlocks);
+            moveResult.GhostBlocks = changedGhostBlocks.ToArray();
+            return moveResult;
+        }
+
         #endregion
 
         #region Ctor
@@ -79,6 +101,15 @@ namespace Tetris.Game
 
         #endregion
 
+        #region Public Properties
+
+        /// <summary>
+        /// Indicates whether ghost blocks are active
+        /// </summary>
+        public bool GhostBlocksActiveStatus { get; private set; } = true;
+
+        #endregion
+
         #region Public Methods
 
         /// <summary>
@@ -89,10 +120,12 @@ namespace Tetris.Game
         {
             current = GenerateNewTetromino();
             next = GenerateNewTetromino();
+            ghostBlocks = deck.GetGhostBlocks(current.VisibleBlocks);
             return new TetrominoInitializationResult
             {
                 ChangedBlocks = current.VisibleBlocks,
-                NextTetromino = next.BaseBlocks
+                NextTetromino = next.BaseBlocks,
+                GhostBlocks = ghostBlocks
             };
         }
 
@@ -102,7 +135,8 @@ namespace Tetris.Game
         /// <returns></returns>
         public ChangeResult MoveRight()
         {
-            return current.MoveRight();
+            var moveResult = current.MoveRight();
+            return CalculateGhostBlock(moveResult);
         }
 
         /// <summary>
@@ -111,7 +145,6 @@ namespace Tetris.Game
         /// <returns></returns>
         public MoveDownResult MoveDown()
         {
-
             var moveDownResult = current.MoveDown();
 
             if (moveDownResult.GameOver || moveDownResult.ChangedBlocks != null)
@@ -123,6 +156,8 @@ namespace Tetris.Game
             next = GenerateNewTetromino();
 
             moveDownResult.NextTetromino = next.BaseBlocks;
+            if (GhostBlocksActiveStatus)
+                moveDownResult.GhostBlocks = ghostBlocks = deck.GetGhostBlocks(current.VisibleBlocks);
 
             return moveDownResult;
         }
@@ -133,7 +168,8 @@ namespace Tetris.Game
         /// <returns></returns>
         public ChangeResult MoveLeft()
         {
-            return current.MoveLeft();
+            var moveResult = current.MoveLeft();
+            return CalculateGhostBlock(moveResult);
         }
 
         /// <summary>
@@ -142,7 +178,38 @@ namespace Tetris.Game
         /// <returns></returns>
         public ChangeResult[] Rotate()
         {
-            return current.Rotate();
+            var rotateResult = current.Rotate();
+            if (rotateResult.Length != 0)
+            {
+                CalculateGhostBlock(rotateResult.Last());
+            }
+            return rotateResult;
+        }
+
+        /// <summary>
+        /// Activates the ghost blocks
+        /// </summary>
+        /// <returns></returns>
+        public ChangeResult ActiveGhostBlocks()
+        {
+            GhostBlocksActiveStatus = true;
+            ghostBlocks = deck.GetGhostBlocks(current.VisibleBlocks);
+            return new ChangeResult { ChangedBlocks = ghostBlocks };
+        }
+
+        /// <summary>
+        /// Deactivates the ghost blocks
+        /// </summary>
+        /// <returns></returns>
+        public ChangeResult DeactiveGhostBlocks()
+        {
+            GhostBlocksActiveStatus = false;
+            var hiddenGhostBlocks = new List<Block>();
+            foreach (var item in ghostBlocks)
+            {
+                hiddenGhostBlocks.Add(new Block(item, BlockStatus.Hidden));
+            }
+            return new ChangeResult { ChangedBlocks = hiddenGhostBlocks.ToArray() };
         }
 
         #endregion

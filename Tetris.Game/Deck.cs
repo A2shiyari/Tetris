@@ -238,6 +238,34 @@ namespace Tetris.Game
             return Blocks[x, y] == BlockStatus.Visible;
         }
 
+        /// <summary>
+        /// Gets the ghost blocks in the deck based on the input tetromino
+        /// </summary>
+        /// <param name="tetrominoBlocks"></param>
+        /// <returns></returns>
+        public Block[] GetGhostBlocks(Block[] tetrominoBlocks)
+        {
+            var ghostBlocks = new List<Block>();
+            foreach (var block in tetrominoBlocks)
+            {
+                ghostBlocks.Add(new Block(block));
+            }
+            while (true)
+            {
+                foreach (var ghostBlock in ghostBlocks)
+                {
+                    if (Collision(ghostBlock.X, ghostBlock.Y + 1))
+                    {
+                        return ghostBlocks.ToArray();
+                    }
+                }
+                foreach (var ghostBlock in ghostBlocks)
+                {
+                    ghostBlock.MoveDown();
+                }
+            }
+        }
+
         #endregion
 
     }

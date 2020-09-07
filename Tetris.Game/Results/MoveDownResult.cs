@@ -4,7 +4,7 @@
     /// <summary>
     /// This class is the result of move down operation
     /// </summary>
-    internal class MoveDownResult
+    internal class MoveDownResult : ChangeResult
     {
 
         #region Public Properties
@@ -13,11 +13,6 @@
         /// Indicates whether the game is over
         /// </summary>
         public bool GameOver { get; set; }
-
-        /// <summary>
-        /// Changed blocks after move down
-        /// </summary>
-        public Block[] ChangedBlocks { get; set; }
 
         /// <summary>
         /// Vanish row result in case of move down led to a vanish operation

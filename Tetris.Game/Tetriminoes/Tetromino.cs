@@ -37,7 +37,7 @@ namespace Tetris.Game.Tetriminoes
             var changedBlocks = new List<Block>();
             foreach (var block in VisibleBlocks)
             {
-                changedBlocks.Add(new Block(block.X, block.Y));
+                changedBlocks.Add(new Block(block, BlockStatus.Hidden));
             }
             return changedBlocks;
         }
@@ -175,7 +175,7 @@ namespace Tetris.Game.Tetriminoes
             {
                 for (var j = 0; j < tetrominoWidthHeight; j++)
                 {
-                    tempBlocks[counter] = new Block(Blocks[counter].X, Blocks[counter].Y, Blocks[index].Status);
+                    tempBlocks[counter] = new Block(Blocks[counter], Blocks[index].Status);
                     counter++;
                     index += tetrominoWidthHeight;
                 }

@@ -14,6 +14,11 @@
         /// </summary>
         public Block[] ChangedBlocks { get; set; }
 
+        /// <summary>
+        /// The ghost blocks
+        /// </summary>
+        public Block[] GhostBlocks { get; set; }
+
         #endregion
 
     }
