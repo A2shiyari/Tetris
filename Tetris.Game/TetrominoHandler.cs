@@ -156,8 +156,8 @@ namespace Tetris.Game
             next = GenerateNewTetromino();
 
             moveDownResult.NextTetromino = next.BaseBlocks;
-            if (GhostBlocksActiveStatus)
-                moveDownResult.GhostBlocks = ghostBlocks = deck.GetGhostBlocks(current.VisibleBlocks);
+            CalculateGhostBlock(moveDownResult);
+                 
 
             return moveDownResult;
         }

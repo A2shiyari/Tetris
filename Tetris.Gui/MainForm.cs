@@ -15,8 +15,8 @@ namespace Tetris.Gui
         private const int deckWidth = 10;
         private const int deckHeight = 20;
         private const int tetrominoWidthHeightBlocks = 4;
-        private const int spaceBetweenBlocks = 0;
-        private const int spaceBetweenBlockBorderAndInnerRectangle = 2;
+        private const int spaceBetweenBlocks = 1;
+        private const int spaceBetweenBlockBorderAndInnerRectangle = 1;
         private const int deckBorderWidth = 5;
         private const int vanishDelayInterval = 200;
         private const int moveRightLeftTimerInterval = 65;
@@ -27,10 +27,10 @@ namespace Tetris.Gui
 
         private int blockWidthHeight = 30;
 
-        private readonly Color vanishColor = Color.DarkOrange;
+        private readonly Color vanishColor = Color.Orange;
         private readonly Color visibleColor = Color.Black;
         private readonly Color hiddenColor = Color.White;
-        private readonly Color ghostColor = Color.LightGray;
+        private readonly Color ghostColor = Color.DarkSlateGray;
 
         private Game.Tetris tetrisGame;
 
@@ -309,7 +309,7 @@ namespace Tetris.Gui
             {
                 foreach (var block in e.Blocks)
                 {
-                    DrawSingleBlock(graphics, block.X, block.Y, block.Status == BlockStatus.Visible ? ghostColor : hiddenColor);
+                    DrawGhostBlock(graphics, block.X, block.Y, block.Status == BlockStatus.Visible ? ghostColor : BackColor);
                 }
             }
             gameDeckPicBox.Refresh();
@@ -337,21 +337,30 @@ namespace Tetris.Gui
 
         private void DrawSingleBlock(Graphics graphics, int x, int y, Color color)
         {
+
             //draw rectangle
             var currentX = x * (spaceBetweenBlocks + blockWidthHeight) + spaceBetweenBlocks + deckBorderWidth;
             var currentY = y * (spaceBetweenBlocks + blockWidthHeight) + spaceBetweenBlocks + deckBorderWidth;
             var blockRectangle = new Rectangle(currentX, currentY, blockWidthHeight, blockWidthHeight);
-            graphics.DrawRectangle(new Pen(color), blockRectangle);
+            graphics.DrawRectangle(new Pen(color, 1), blockRectangle);
 
             // fill inner rectangle
-            blockRectangle.X += spaceBetweenBlockBorderAndInnerRectangle;
-            blockRectangle.Y += spaceBetweenBlockBorderAndInnerRectangle;
-            blockRectangle.Width -= spaceBetweenBlockBorderAndInnerRectangle * 2 - 1;
-            blockRectangle.Height -= spaceBetweenBlockBorderAndInnerRectangle * 2 - 1;
+            blockRectangle.X += spaceBetweenBlockBorderAndInnerRectangle * 2;
+            blockRectangle.Y += spaceBetweenBlockBorderAndInnerRectangle * 2;
+            blockRectangle.Width -= spaceBetweenBlockBorderAndInnerRectangle * 2 * 2;
+            blockRectangle.Height -= spaceBetweenBlockBorderAndInnerRectangle * 2 * 2;
+            blockRectangle.Width++;
+            blockRectangle.Height++;
             graphics.FillRectangle(new SolidBrush(color), blockRectangle);
 
+        }
 
-         //   graphics.DrawString(x + "," + y, DefaultFont, new SolidBrush(Color.Red), blockRectangle);
+        private void DrawGhostBlock(Graphics graphics, int x, int y, Color color)
+        {
+            var currentX = x * (spaceBetweenBlocks + blockWidthHeight) + spaceBetweenBlocks + deckBorderWidth + spaceBetweenBlockBorderAndInnerRectangle;
+            var currentY = y * (spaceBetweenBlocks + blockWidthHeight) + spaceBetweenBlocks + deckBorderWidth + spaceBetweenBlockBorderAndInnerRectangle;
+            var blockRectangle = new Rectangle(currentX, currentY, blockWidthHeight - spaceBetweenBlockBorderAndInnerRectangle * 2, blockWidthHeight - spaceBetweenBlockBorderAndInnerRectangle * 2);
+            graphics.DrawRectangle(new Pen(color, 1), blockRectangle);
         }
 
         #endregion

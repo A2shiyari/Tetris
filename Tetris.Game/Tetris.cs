@@ -150,6 +150,7 @@ namespace Tetris.Game
 
                 if (Status == GameStatus.RestartPending)
                 {
+                    SetGhostValue(false);
                     return;
                 }
 
