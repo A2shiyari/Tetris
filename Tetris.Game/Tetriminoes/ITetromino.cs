@@ -159,6 +159,11 @@ namespace Tetris.Game.Tetriminoes
                 var canMoveRight = CanMoveRight();
                 var canMoveLeft = CanMoveLeft();
 
+                if (!canMoveRight && !canMoveLeft)
+                {
+                    return new ChangeResult[0];
+                }
+
                 if (canMoveLeft && !canMoveRight)
                 {
                     return CanMoveLeftButCanNotMoveRight();
