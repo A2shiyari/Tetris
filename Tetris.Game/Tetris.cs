@@ -157,6 +157,7 @@ namespace Tetris.Game
                 MoveDown();
                 if (Status == GameStatus.GameOver)
                 {
+                    SetGhostValue(false);
                     return;
                 }
             }
