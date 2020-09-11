@@ -485,7 +485,6 @@ namespace Tetris.Game
         /// <param name="changedBlocks"></param>
         protected virtual void OnChangedBlocks(Block[] changedBlocks)
         {
-            // var checkedBlocks = RemoveOutBoundBlocks(changedBlocks);
             ChangedBlocks?.Invoke(this, new BlockEventArgs(changedBlocks));
         }
 
@@ -503,7 +502,6 @@ namespace Tetris.Game
         /// <param name="ghostBlocks"></param>
         public virtual void OnGhostBlocks(Block[] ghostBlocks)
         {
-            //var checkedBlocks = RemoveOutBoundBlocks(ghostBlocks);
             GhostBlocks?.Invoke(this, new BlockEventArgs(ghostBlocks));
         }
 
