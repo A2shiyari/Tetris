@@ -64,19 +64,14 @@ namespace Tetris.Game
         /// </summary>
         private readonly int deckHeight;
 
+        /// <summary>
+        /// Indicates whether hard drop is on going
+        /// </summary>
+        private bool hardDrop = false;
+
         #endregion
 
         #region Private Methods
-
-        /// <summary>
-        /// Remove blocks that are not in deck bounds before changed blocks event
-        /// </summary>
-        /// <param name="blocks"></param>
-        /// <returns></returns>
-        private Block[] RemoveOutBoundBlocks(Block[] blocks)
-        {
-            return blocks.Where(s => s.Y >= 0).ToArray();
-        }
 
         /// <summary>
         /// Sets the status to game over and notifies game over
@@ -146,7 +141,7 @@ namespace Tetris.Game
             {
                 Thread.Sleep(runnerThreadInterval);
 
-                if (Status == GameStatus.Paused) continue;
+                if (hardDrop || Status == GameStatus.Paused) continue;
 
                 if (Status == GameStatus.RestartPending)
                 {
@@ -155,6 +150,7 @@ namespace Tetris.Game
                 }
 
                 MoveDown();
+
                 if (Status == GameStatus.GameOver)
                 {
                     SetGhostValue(false);
@@ -439,6 +435,7 @@ namespace Tetris.Game
             {
                 return;
             }
+            hardDrop = true;
             lock (synchronizationToken)
             {
                 while (!MoveDownInternal(true))
@@ -446,6 +443,7 @@ namespace Tetris.Game
                     Thread.Sleep(hardDropDelay);
                 }
             }
+            hardDrop = false;
         }
 
         #endregion
@@ -487,8 +485,8 @@ namespace Tetris.Game
         /// <param name="changedBlocks"></param>
         protected virtual void OnChangedBlocks(Block[] changedBlocks)
         {
-            var checkedBlocks = RemoveOutBoundBlocks(changedBlocks);
-            ChangedBlocks?.Invoke(this, new BlockEventArgs(checkedBlocks));
+            // var checkedBlocks = RemoveOutBoundBlocks(changedBlocks);
+            ChangedBlocks?.Invoke(this, new BlockEventArgs(changedBlocks));
         }
 
         /// <summary>
@@ -505,8 +503,8 @@ namespace Tetris.Game
         /// <param name="ghostBlocks"></param>
         public virtual void OnGhostBlocks(Block[] ghostBlocks)
         {
-            var checkedBlocks = RemoveOutBoundBlocks(ghostBlocks);
-            GhostBlocks?.Invoke(this, new BlockEventArgs(checkedBlocks));
+            //var checkedBlocks = RemoveOutBoundBlocks(ghostBlocks);
+            GhostBlocks?.Invoke(this, new BlockEventArgs(ghostBlocks));
         }
 
         #endregion

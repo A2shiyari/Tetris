@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using Tetris.Game.Results;
 using Tetris.Game.Tetriminoes;
 
@@ -155,9 +154,10 @@ namespace Tetris.Game
             current = next;
             next = GenerateNewTetromino();
 
+            moveDownResult.ChangedBlocks = current.VisibleBlocks;
+
             moveDownResult.NextTetromino = next.BaseBlocks;
             CalculateGhostBlock(moveDownResult);
-                 
 
             return moveDownResult;
         }

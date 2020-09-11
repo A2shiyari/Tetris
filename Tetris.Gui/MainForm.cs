@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Drawing;
+using System.Linq;
 using System.Threading;
 using System.Windows.Forms;
 using Tetris.Game;
@@ -20,6 +21,8 @@ namespace Tetris.Gui
         private const int deckBorderWidth = 5;
         private const int vanishDelayInterval = 200;
         private const int moveRightLeftTimerInterval = 65;
+        private const int verticalSpaceBetweenUiElements = 20;
+        private const int horizontalSpaceBetweenUiElements = 100;
 
         #endregion
 
@@ -41,6 +44,7 @@ namespace Tetris.Gui
 
         private Bitmap gameDeckBitmap;
         private Bitmap nextTetrominoBitmap;
+        private Bitmap headerBitmap;
 
         #endregion
 
@@ -319,12 +323,23 @@ namespace Tetris.Gui
         {
             using (var graphics = Graphics.FromImage(gameDeckBitmap))
             {
-                foreach (var block in e.Blocks)
+                foreach (var block in e.Blocks.Where(s => s.Y >= 0))
                 {
                     DrawSingleBlock(graphics, block.X, block.Y, block.Status == BlockStatus.Visible ? visibleColor : hiddenColor);
                 }
             }
             gameDeckPicBox.Refresh();
+
+            if (e.Blocks.All(s => s.Y >= 0)) return;
+
+            using (var graphics = Graphics.FromImage(headerBitmap))
+            {
+                foreach (var block in e.Blocks.Where(s => s.Y < 0))
+                {
+                    DrawSingleBlock(graphics, block.X, tetrominoWidthHeightBlocks + block.Y, block.Status == BlockStatus.Visible ? visibleColor : BackColor);
+                }
+            }
+            headerPicBox.Refresh();
         }
 
         private void DrawBoarder()
@@ -332,6 +347,7 @@ namespace Tetris.Gui
             using (var graphic = Graphics.FromImage(gameDeckBitmap))
             {
                 graphic.DrawRectangle(new Pen(Color.Black, deckBorderWidth), new Rectangle(0, 0, gameDeckPicBox.Width, gameDeckPicBox.Height));
+                graphic.DrawRectangle(new Pen(BackColor, deckBorderWidth), new Rectangle(deckBorderWidth, 0, gameDeckPicBox.Width - deckBorderWidth * 2, deckBorderWidth));
             }
         }
 
@@ -372,36 +388,42 @@ namespace Tetris.Gui
             gameDeckPicBox.Left = Width / 2 - gameDeckPicBox.Width / 2 - scoreGrp.Width / 2;
             gameDeckPicBox.Top = Height / 2 - gameDeckPicBox.Height / 2;
 
+            headerPicBox.Left = gameDeckPicBox.Left;
+            headerPicBox.Top = gameDeckPicBox.Top - headerPicBox.Height + deckBorderWidth + 1;
+            headerPicBox.BringToFront();
+
             nextLbl.Top = gameDeckPicBox.Top;
-            nextLbl.Left = gameDeckPicBox.Left + gameDeckPicBox.Width + 100;
+            nextLbl.Left = gameDeckPicBox.Left + gameDeckPicBox.Width + horizontalSpaceBetweenUiElements;
 
-            nextTetrominoPicBox.Top = gameDeckPicBox.Top + 30;
-            nextTetrominoPicBox.Left = gameDeckPicBox.Left + gameDeckPicBox.Width + 100;
+            nextTetrominoPicBox.Top = gameDeckPicBox.Top + verticalSpaceBetweenUiElements;
+            nextTetrominoPicBox.Left = gameDeckPicBox.Left + gameDeckPicBox.Width + horizontalSpaceBetweenUiElements;
 
-            scoreGrp.Top = nextTetrominoPicBox.Top + nextTetrominoPicBox.Height + 20;
+            scoreGrp.Top = nextTetrominoPicBox.Top + nextTetrominoPicBox.Height + verticalSpaceBetweenUiElements;
             scoreGrp.Left = nextTetrominoPicBox.Left;
 
             shortcutsGrp.Left = scoreGrp.Left;
-            shortcutsGrp.Top = scoreGrp.Top + scoreGrp.Height + 20;
+            shortcutsGrp.Top = scoreGrp.Top + scoreGrp.Height + verticalSpaceBetweenUiElements;
         }
 
         private void InitializeDrawingBitmaps()
         {
-            var gameDeckwidth = deckWidth * (blockWidthHeight + spaceBetweenBlocks) + 10;
-            var gameDeckHeight = deckHeight * (blockWidthHeight + spaceBetweenBlocks) + 10;
+            var gameDeckwidth = deckWidth * (blockWidthHeight + spaceBetweenBlocks) + deckBorderWidth * 2;
+            var gameDeckHeight = deckHeight * (blockWidthHeight + spaceBetweenBlocks) + deckBorderWidth * 2;
 
             if (gameDeckHeight > Height || gameDeckwidth > Width)
             {
                 blockWidthHeight /= 2;
-                gameDeckwidth = deckWidth * (blockWidthHeight + spaceBetweenBlocks) + 10;
-                gameDeckHeight = deckHeight * (blockWidthHeight + spaceBetweenBlocks) + 10;
+                gameDeckwidth = deckWidth * (blockWidthHeight + spaceBetweenBlocks) + deckBorderWidth * 2;
+                gameDeckHeight = deckHeight * (blockWidthHeight + spaceBetweenBlocks) + deckBorderWidth * 2;
             }
 
             gameDeckBitmap = new Bitmap(gameDeckwidth, gameDeckHeight, System.Drawing.Imaging.PixelFormat.Format32bppPArgb);
             nextTetrominoBitmap = new Bitmap(tetrominoWidthHeightBlocks * (blockWidthHeight + spaceBetweenBlocks), tetrominoWidthHeightBlocks * (blockWidthHeight + spaceBetweenBlocks) + 10, System.Drawing.Imaging.PixelFormat.Format32bppPArgb);
+            headerBitmap = new Bitmap(gameDeckwidth, tetrominoWidthHeightBlocks * (blockWidthHeight + spaceBetweenBlocks) + deckBorderWidth + 1);
 
             gameDeckPicBox.Image = gameDeckBitmap;
             nextTetrominoPicBox.Image = nextTetrominoBitmap;
+            headerPicBox.Image = headerBitmap;
         }
 
         private void InitializeTetrisGame()

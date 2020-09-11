@@ -43,12 +43,14 @@
             this.restartGameLbl = new System.Windows.Forms.Label();
             this.resumeGameLbl = new System.Windows.Forms.Label();
             this.pauseGameLbl = new System.Windows.Forms.Label();
+            this.ghostOnOffLbl = new System.Windows.Forms.Label();
             this.hardDropLbl = new System.Windows.Forms.Label();
             this.moveDownLbl = new System.Windows.Forms.Label();
             this.escapeKeyLbl = new System.Windows.Forms.Label();
             this.enterKeyLbl = new System.Windows.Forms.Label();
             this.rKeyLbl = new System.Windows.Forms.Label();
             this.moveLeftLbl = new System.Windows.Forms.Label();
+            this.gKeyLbl = new System.Windows.Forms.Label();
             this.pKeyLbl = new System.Windows.Forms.Label();
             this.spaceKeyLbl = new System.Windows.Forms.Label();
             this.downArrowKeyLbl = new System.Windows.Forms.Label();
@@ -57,17 +59,17 @@
             this.rotateLbl = new System.Windows.Forms.Label();
             this.rightArrowKeyLbl = new System.Windows.Forms.Label();
             this.upArrowKeyLbl = new System.Windows.Forms.Label();
-            this.ghostOnOffLbl = new System.Windows.Forms.Label();
-            this.gKeyLbl = new System.Windows.Forms.Label();
+            this.headerPicBox = new System.Windows.Forms.PictureBox();
             ((System.ComponentModel.ISupportInitialize)(this.gameDeckPicBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nextTetrominoPicBox)).BeginInit();
             this.scoreGrp.SuspendLayout();
             this.shortcutsGrp.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.headerPicBox)).BeginInit();
             this.SuspendLayout();
             // 
             // gameDeckPicBox
             // 
-            this.gameDeckPicBox.Location = new System.Drawing.Point(24, 12);
+            this.gameDeckPicBox.Location = new System.Drawing.Point(40, 101);
             this.gameDeckPicBox.Name = "gameDeckPicBox";
             this.gameDeckPicBox.Size = new System.Drawing.Size(378, 416);
             this.gameDeckPicBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
@@ -76,7 +78,7 @@
             // 
             // nextTetrominoPicBox
             // 
-            this.nextTetrominoPicBox.Location = new System.Drawing.Point(439, 12);
+            this.nextTetrominoPicBox.Location = new System.Drawing.Point(455, 101);
             this.nextTetrominoPicBox.Name = "nextTetrominoPicBox";
             this.nextTetrominoPicBox.Size = new System.Drawing.Size(273, 240);
             this.nextTetrominoPicBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
@@ -91,7 +93,7 @@
             this.scoreGrp.Controls.Add(this.linesCaptionLbl);
             this.scoreGrp.Controls.Add(this.scoreLbl);
             this.scoreGrp.Controls.Add(this.linesLbl);
-            this.scoreGrp.Location = new System.Drawing.Point(433, 277);
+            this.scoreGrp.Location = new System.Drawing.Point(449, 366);
             this.scoreGrp.Name = "scoreGrp";
             this.scoreGrp.Size = new System.Drawing.Size(238, 110);
             this.scoreGrp.TabIndex = 1;
@@ -161,7 +163,7 @@
             // 
             this.nextLbl.AutoSize = true;
             this.nextLbl.Font = new System.Drawing.Font("Segoe UI Semibold", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
-            this.nextLbl.Location = new System.Drawing.Point(405, 124);
+            this.nextLbl.Location = new System.Drawing.Point(421, 213);
             this.nextLbl.Name = "nextLbl";
             this.nextLbl.Size = new System.Drawing.Size(32, 15);
             this.nextLbl.TabIndex = 0;
@@ -189,7 +191,7 @@
             this.shortcutsGrp.Controls.Add(this.rotateLbl);
             this.shortcutsGrp.Controls.Add(this.rightArrowKeyLbl);
             this.shortcutsGrp.Controls.Add(this.upArrowKeyLbl);
-            this.shortcutsGrp.Location = new System.Drawing.Point(744, 40);
+            this.shortcutsGrp.Location = new System.Drawing.Point(760, 129);
             this.shortcutsGrp.Name = "shortcutsGrp";
             this.shortcutsGrp.Size = new System.Drawing.Size(238, 288);
             this.shortcutsGrp.TabIndex = 1;
@@ -234,6 +236,16 @@
             this.pauseGameLbl.Size = new System.Drawing.Size(75, 15);
             this.pauseGameLbl.TabIndex = 0;
             this.pauseGameLbl.Text = "Pause Game:";
+            // 
+            // ghostOnOffLbl
+            // 
+            this.ghostOnOffLbl.AutoSize = true;
+            this.ghostOnOffLbl.Font = new System.Drawing.Font("Segoe UI Semibold", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            this.ghostOnOffLbl.Location = new System.Drawing.Point(21, 150);
+            this.ghostOnOffLbl.Name = "ghostOnOffLbl";
+            this.ghostOnOffLbl.Size = new System.Drawing.Size(82, 15);
+            this.ghostOnOffLbl.TabIndex = 0;
+            this.ghostOnOffLbl.Text = "Ghost On/Off:";
             // 
             // hardDropLbl
             // 
@@ -294,6 +306,16 @@
             this.moveLeftLbl.Size = new System.Drawing.Size(63, 15);
             this.moveLeftLbl.TabIndex = 0;
             this.moveLeftLbl.Text = "Move Left:";
+            // 
+            // gKeyLbl
+            // 
+            this.gKeyLbl.AutoSize = true;
+            this.gKeyLbl.Font = new System.Drawing.Font("Segoe UI Semibold", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            this.gKeyLbl.Location = new System.Drawing.Point(118, 150);
+            this.gKeyLbl.Name = "gKeyLbl";
+            this.gKeyLbl.Size = new System.Drawing.Size(37, 15);
+            this.gKeyLbl.TabIndex = 0;
+            this.gKeyLbl.Text = "G Key";
             // 
             // pKeyLbl
             // 
@@ -375,31 +397,21 @@
             this.upArrowKeyLbl.TabIndex = 0;
             this.upArrowKeyLbl.Text = "Up Arrow Key";
             // 
-            // ghostOnOffLbl
+            // headerPicBox
             // 
-            this.ghostOnOffLbl.AutoSize = true;
-            this.ghostOnOffLbl.Font = new System.Drawing.Font("Segoe UI Semibold", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
-            this.ghostOnOffLbl.Location = new System.Drawing.Point(21, 150);
-            this.ghostOnOffLbl.Name = "ghostOnOffLbl";
-            this.ghostOnOffLbl.Size = new System.Drawing.Size(82, 15);
-            this.ghostOnOffLbl.TabIndex = 0;
-            this.ghostOnOffLbl.Text = "Ghost On/Off:";
-            // 
-            // gKeyLbl
-            // 
-            this.gKeyLbl.AutoSize = true;
-            this.gKeyLbl.Font = new System.Drawing.Font("Segoe UI Semibold", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
-            this.gKeyLbl.Location = new System.Drawing.Point(118, 150);
-            this.gKeyLbl.Name = "gKeyLbl";
-            this.gKeyLbl.Size = new System.Drawing.Size(37, 15);
-            this.gKeyLbl.TabIndex = 0;
-            this.gKeyLbl.Text = "G Key";
+            this.headerPicBox.Location = new System.Drawing.Point(40, 45);
+            this.headerPicBox.Name = "headerPicBox";
+            this.headerPicBox.Size = new System.Drawing.Size(378, 50);
+            this.headerPicBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
+            this.headerPicBox.TabIndex = 2;
+            this.headerPicBox.TabStop = false;
             // 
             // MainFrom
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1027, 458);
+            this.ClientSize = new System.Drawing.Size(1033, 545);
+            this.Controls.Add(this.headerPicBox);
             this.Controls.Add(this.shortcutsGrp);
             this.Controls.Add(this.scoreGrp);
             this.Controls.Add(this.nextTetrominoPicBox);
@@ -423,6 +435,7 @@
             this.scoreGrp.PerformLayout();
             this.shortcutsGrp.ResumeLayout(false);
             this.shortcutsGrp.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.headerPicBox)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -460,6 +473,7 @@
         private System.Windows.Forms.Label escapeKeyLbl;
         private System.Windows.Forms.Label ghostOnOffLbl;
         private System.Windows.Forms.Label gKeyLbl;
+        private System.Windows.Forms.PictureBox headerPicBox;
     }
 }
 
