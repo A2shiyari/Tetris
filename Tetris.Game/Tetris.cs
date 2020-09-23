@@ -67,11 +67,54 @@ namespace Tetris.Game
         /// <summary>
         /// Indicates whether hard drop is on going
         /// </summary>
-        private bool hardDrop = false;
+        private bool hardDrop;
+
+        /// <summary>
+        /// Indicates whether the previous move was the tetromino last move before locking
+        /// </summary>
+        private bool lastMove;
+
+        /// <summary>
+        /// The interval of lock delay
+        /// </summary>
+        private readonly int lockDelayInterval = 500;
+
+        /// <summary>
+        /// The tick count of the last successfull move
+        /// </summary>
+        private int lastMoveTickCount;
 
         #endregion
 
         #region Private Methods
+
+        /// <summary>
+        /// Checks for lock delay 
+        /// </summary>
+        /// <returns></returns>
+        private bool CheckForLockDelay()
+        {
+            if (!lastMove) return false;
+
+            if (Environment.TickCount - lastMoveTickCount >= lockDelayInterval)
+            {
+                return false;
+            }
+            return true;
+        }
+
+        /// <summary>
+        /// Set the last move to current tick count in order to be used for lock delay mechanism
+        /// </summary>
+        /// <param name="changeResult"></param>
+        private void SetLastMove(ChangeResult changeResult)
+        {
+            if (changeResult != null)
+            {
+                lastMove = changeResult.LastMove;
+                lastMoveTickCount = Environment.TickCount;
+            }
+        }
 
         /// <summary>
         /// Sets the status to game over and notifies game over
@@ -149,6 +192,8 @@ namespace Tetris.Game
                     return;
                 }
 
+                if (CheckForLockDelay()) continue;
+
                 MoveDown();
 
                 if (Status == GameStatus.GameOver)
@@ -186,6 +231,11 @@ namespace Tetris.Game
             {
                 GameIsOver();
                 return true;
+            }
+
+            if (!hardDrop)
+            {
+                SetLastMove(moveDownResult);
             }
 
             if (moveDownResult.ChangedBlocks != null)
@@ -320,6 +370,7 @@ namespace Tetris.Game
             lock (synchronizationToken)
             {
                 var moveResult = tetrominoHandler.MoveRight();
+                SetLastMove(moveResult);
                 if (moveResult != null)
                 {
                     if (moveResult.GhostBlocks != null)
@@ -343,6 +394,7 @@ namespace Tetris.Game
             lock (synchronizationToken)
             {
                 var moveResult = tetrominoHandler.MoveLeft();
+                SetLastMove(moveResult);
                 if (moveResult != null)
                 {
                     if (moveResult.GhostBlocks != null)
@@ -381,6 +433,7 @@ namespace Tetris.Game
             lock (synchronizationToken)
             {
                 var rotateResult = tetrominoHandler.Rotate();
+                SetLastMove(rotateResult.LastOrDefault());
                 foreach (var changeResult in rotateResult)
                 {
                     if (changeResult.GhostBlocks != null)

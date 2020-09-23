@@ -19,6 +19,11 @@
         /// </summary>
         public Block[] GhostBlocks { get; set; }
 
+        /// <summary>
+        /// Indicates whether it was the last move of the current tetromino before locking
+        /// </summary>
+        public bool LastMove { get; set; }
+
         #endregion
 
     }

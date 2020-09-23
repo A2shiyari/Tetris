@@ -99,19 +99,6 @@ namespace Tetris.Game.Tetriminoes
         }
 
         /// <summary>
-        /// Checks whether tetromino can move down
-        /// </summary>
-        /// <returns></returns>
-        private bool CanMoveDown()
-        {
-            foreach (var block in VisibleBlocks)
-            {
-                if (deck.Collision(block.X, block.Y + 1)) return false;
-            }
-            return true;
-        }
-
-        /// <summary>
         /// Checks for game over 
         /// </summary>
         /// <returns></returns>
@@ -222,6 +209,19 @@ namespace Tetris.Game.Tetriminoes
         #endregion
 
         #region Public Methods
+
+        /// <summary>
+        /// Checks whether tetromino can move down
+        /// </summary>
+        /// <returns></returns>
+        public bool CanMoveDown()
+        {
+            foreach (var block in VisibleBlocks)
+            {
+                if (deck.Collision(block.X, block.Y + 1)) return false;
+            }
+            return true;
+        }
 
         /// <summary>
         /// Moves the tetromino to right if it's possible and return the changed blocks after movement

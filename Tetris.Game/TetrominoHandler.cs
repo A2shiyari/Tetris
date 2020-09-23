@@ -70,9 +70,13 @@ namespace Tetris.Game
             }
         }
 
-        private ChangeResult CalculateGhostBlock(ChangeResult moveResult)
+        /// <summary>
+        /// Calculates the ghost block for current tetromino
+        /// </summary>
+        /// <param name="moveResult"></param>
+        private void CalculateGhostBlock(ChangeResult moveResult)
         {
-            if (moveResult == null || !GhostBlocksActiveStatus) return moveResult;
+            if (moveResult == null || !GhostBlocksActiveStatus) return;
             var changedGhostBlocks = new List<Block>();
             foreach (var ghostBlock in ghostBlocks)
             {
@@ -81,7 +85,17 @@ namespace Tetris.Game
             ghostBlocks = deck.GetGhostBlocks(current.VisibleBlocks);
             changedGhostBlocks.AddRange(ghostBlocks);
             moveResult.GhostBlocks = changedGhostBlocks.ToArray();
-            return moveResult;
+        }
+
+        /// <summary>
+        /// Sets the last move value in the result
+        /// </summary>
+        /// <param name="moveResult"></param>
+        private void SetLastMove(ChangeResult moveResult)
+        {
+            if (moveResult == null) return;
+
+            moveResult.LastMove = !current.CanMoveDown();
         }
 
         #endregion
@@ -135,7 +149,9 @@ namespace Tetris.Game
         public ChangeResult MoveRight()
         {
             var moveResult = current.MoveRight();
-            return CalculateGhostBlock(moveResult);
+            SetLastMove(moveResult);
+            CalculateGhostBlock(moveResult);
+            return moveResult;
         }
 
         /// <summary>
@@ -146,8 +162,11 @@ namespace Tetris.Game
         {
             var moveDownResult = current.MoveDown();
 
+            
+
             if (moveDownResult.GameOver || moveDownResult.ChangedBlocks != null)
             {
+                SetLastMove(moveDownResult);
                 return moveDownResult;
             }
 
@@ -169,7 +188,9 @@ namespace Tetris.Game
         public ChangeResult MoveLeft()
         {
             var moveResult = current.MoveLeft();
-            return CalculateGhostBlock(moveResult);
+            SetLastMove(moveResult);
+            CalculateGhostBlock(moveResult);
+            return moveResult;
         }
 
         /// <summary>
@@ -182,6 +203,7 @@ namespace Tetris.Game
             if (rotateResult.Length != 0)
             {
                 CalculateGhostBlock(rotateResult.Last());
+                SetLastMove(rotateResult.Last());
             }
             return rotateResult;
         }
