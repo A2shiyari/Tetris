@@ -165,7 +165,6 @@ namespace Tetris.Game
         /// </summary>
         private void InitilizeScoreManagement()
         {
-            Level = Level.One;
             runnerThreadInterval = Level.GetRunningInterval();
             scoreManagement = new ScoreManagement();
             OnScore(0, 0, Level);
@@ -351,11 +350,21 @@ namespace Tetris.Game
         #region Public Methods
 
         /// <summary>
+        /// Start the game from the input level
+        /// </summary>
+        /// <param name="level"></param>
+        public void Start(Level level)
+        {
+            Level = level;
+            InitializeTetris();
+        }
+
+        /// <summary>
         /// Start the game
         /// </summary>
         public void Start()
         {
-            InitializeTetris();
+            Start(Level.One);
         }
 
         /// <summary>
@@ -474,8 +483,18 @@ namespace Tetris.Game
         /// </summary>
         public void Restart()
         {
+            Restart(Level.One);
+        }
+
+        /// <summary>
+        /// Restart the game from the input level
+        /// </summary>
+        /// <param name="level"></param>
+        public void Restart(Level level)
+        {
             Status = GameStatus.RestartPending;
             runnerThread.Join();
+            Level = level;
             InitializeTetris();
         }
 
