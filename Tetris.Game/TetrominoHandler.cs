@@ -26,11 +26,6 @@ namespace Tetris.Game
         private Tetromino next;
 
         /// <summary>
-        /// Random generator for generating tetrominos
-        /// </summary>
-        private readonly Random randomGenerator;
-
-        /// <summary>
         /// Game deck
         /// </summary>
         private readonly Deck deck;
@@ -39,6 +34,11 @@ namespace Tetris.Game
         /// Ghost blocks of the game
         /// </summary>
         private Block[] ghostBlocks;
+
+        /// <summary>
+        /// tetromino generator based on 7 bag algorithm
+        /// </summary>
+        private readonly Tetrominos7BagRandomizer tetrominos7Bag;
 
         #endregion
 
@@ -50,24 +50,7 @@ namespace Tetris.Game
         /// <returns></returns>
         private Tetromino GenerateNewTetromino()
         {
-            var generatedRandomNumber = randomGenerator.Next(0, 7);
-            switch (generatedRandomNumber)
-            {
-                case 0:
-                    return new OTetromino(deck);
-                case 1:
-                    return new ITetromino(deck);
-                case 2:
-                    return new LTetromino(deck);
-                case 3:
-                    return new ZTetromino(deck);
-                case 4:
-                    return new STetromino(deck);
-                case 5:
-                    return new JTetromino(deck);
-                default:
-                    return new TTetromino(deck);
-            }
+            return tetrominos7Bag.GetNewTetromino();
         }
 
         /// <summary>
@@ -108,8 +91,8 @@ namespace Tetris.Game
         /// <param name="deck"></param>
         public TetrominoHandler(Deck deck)
         {
-            randomGenerator = new Random();
             this.deck = deck;
+            tetrominos7Bag = new Tetrominos7BagRandomizer(deck);
         }
 
         #endregion
@@ -174,10 +157,11 @@ namespace Tetris.Game
             next = GenerateNewTetromino();
 
             moveDownResult.ChangedBlocks = current.VisibleBlocks;
-
+            
             moveDownResult.NextTetromino = next.BaseBlocks;
             CalculateGhostBlock(moveDownResult);
 
+            SetLastMove(moveDownResult);
             return moveDownResult;
         }
 
