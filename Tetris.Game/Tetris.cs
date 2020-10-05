@@ -225,6 +225,14 @@ namespace Tetris.Game
         /// <returns></returns>
         private bool MoveDownInternal(bool hardDrop)
         {
+            if (!hardDrop)
+            {
+                if (CheckForLockDelay())
+                {
+                    return false;
+                }
+            }
+
             var moveDownResult = tetrominoHandler.MoveDown();
             if (moveDownResult.GameOver)
             {
