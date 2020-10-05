@@ -88,7 +88,7 @@ namespace Tetris.Game.Tetriminoes
             {
                 for (var j = 0; j < tetrominoWidthHeight; j++)
                 {
-                    if (Blocks[blockIndex].Status == BlockStatus.Visible)
+                    if (Blocks[blockIndex].Status != BlockStatus.Hidden)
                     {
                         blockList.Add(new Block(i, j, Blocks[blockIndex].Status));
                     }
@@ -199,7 +199,7 @@ namespace Tetris.Game.Tetriminoes
         /// <summary>
         /// Visible blocks of tetromino
         /// </summary>
-        public Block[] VisibleBlocks { get { return Blocks.Where(s => s.Status == BlockStatus.Visible).ToArray(); } }
+        public Block[] VisibleBlocks { get { return Blocks.Where(s => s.Status != BlockStatus.Hidden).ToArray(); } }
 
         /// <summary>
         /// Base blocks of tetromino in the postion of 0,0 for next tetromino event handler
@@ -372,7 +372,7 @@ namespace Tetris.Game.Tetriminoes
             {
                 for (var j = 0; j < tetrominoWidthHeight; j++)
                 {
-                    if (Blocks[index].Status == BlockStatus.Visible && deck.Collision(Blocks[cnt].X, Blocks[cnt].Y))
+                    if (Blocks[index].Status != BlockStatus.Hidden && deck.Collision(Blocks[cnt].X, Blocks[cnt].Y))
                     {
                         return false;
                     }

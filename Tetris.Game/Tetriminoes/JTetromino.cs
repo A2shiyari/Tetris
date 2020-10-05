@@ -31,10 +31,10 @@
                'J' 'J' '8'
             */
 
-            Blocks[2].Status = BlockStatus.Visible;
-            Blocks[3].Status = BlockStatus.Visible;
-            Blocks[4].Status = BlockStatus.Visible;
-            Blocks[5].Status = BlockStatus.Visible;
+            Blocks[2].Status = BlockStatus.DarkBlue;
+            Blocks[3].Status = BlockStatus.DarkBlue;
+            Blocks[4].Status = BlockStatus.DarkBlue;
+            Blocks[5].Status = BlockStatus.DarkBlue;
         }
 
         #endregion

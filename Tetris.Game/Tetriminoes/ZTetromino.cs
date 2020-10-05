@@ -31,10 +31,10 @@
              '2' 'Z' 'Z'
             */
 
-            Blocks[1].Status = BlockStatus.Visible;
-            Blocks[4].Status = BlockStatus.Visible;
-            Blocks[5].Status = BlockStatus.Visible;
-            Blocks[8].Status = BlockStatus.Visible;
+            Blocks[1].Status = BlockStatus.Red;
+            Blocks[4].Status = BlockStatus.Red;
+            Blocks[5].Status = BlockStatus.Red;
+            Blocks[8].Status = BlockStatus.Red;
         }
 
         #endregion

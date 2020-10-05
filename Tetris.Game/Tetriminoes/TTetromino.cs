@@ -31,10 +31,10 @@
              '2' 'T' '8'
             */
 
-            Blocks[1].Status = BlockStatus.Visible;
-            Blocks[4].Status = BlockStatus.Visible;
-            Blocks[5].Status = BlockStatus.Visible;
-            Blocks[7].Status = BlockStatus.Visible;
+            Blocks[1].Status = BlockStatus.Magenta;
+            Blocks[4].Status = BlockStatus.Magenta;
+            Blocks[5].Status = BlockStatus.Magenta;
+            Blocks[7].Status = BlockStatus.Magenta;
         }
 
         #endregion

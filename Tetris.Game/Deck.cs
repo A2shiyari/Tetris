@@ -68,7 +68,7 @@ namespace Tetris.Game
             {
                 for (var i = 0; i < Width; i++)
                 {
-                    changedBlocks.Add(new Block(i, row));
+                    changedBlocks.Add(new Block(i, row , Blocks[i,row]));
                 }
             }
             return changedBlocks.ToArray();
@@ -88,7 +88,7 @@ namespace Tetris.Game
                 {
                     if (i == 0)
                     {
-                        if (Blocks[j, i] == BlockStatus.Visible)
+                        if (Blocks[j, i] != BlockStatus.Hidden)
                         {
                             Blocks[j, i] = BlockStatus.Hidden;
                             changedBlocks.Add(new Block(j, i));
@@ -169,7 +169,7 @@ namespace Tetris.Game
         {
             foreach (var block in blocks)
             {
-                Blocks[block.X, block.Y] = BlockStatus.Visible;
+                Blocks[block.X, block.Y] = block.Status;
             }
             var tempLowestY = blocks.Min(s => s.Y);
             if (tempLowestY < lowestRowPostion)
@@ -235,7 +235,7 @@ namespace Tetris.Game
             {
                 return false;
             }
-            return Blocks[x, y] == BlockStatus.Visible;
+            return Blocks[x, y] != BlockStatus.Hidden;
         }
 
         /// <summary>

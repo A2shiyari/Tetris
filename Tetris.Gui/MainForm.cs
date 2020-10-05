@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Linq;
 using System.Threading;
 using System.Windows.Forms;
@@ -16,7 +18,7 @@ namespace Tetris.Gui
         private const int deckWidth = 10;
         private const int deckHeight = 20;
         private const int tetrominoWidthHeightBlocks = 4;
-        private const int spaceBetweenBlocks = 1;
+        private const int spaceBetweenBlocks = 2;
         private const int spaceBetweenBlockBorderAndInnerRectangle = 1;
         private const int deckBorderWidth = 5;
         private const int vanishDelayInterval = 200;
@@ -31,9 +33,9 @@ namespace Tetris.Gui
         private int blockWidthHeight = 30;
 
         private readonly Color vanishColor = Color.Orange;
-        private readonly Color visibleColor = Color.Black;
+        private readonly Color borderColor = Color.Black;
         private readonly Color hiddenColor = Color.White;
-        private readonly Color ghostColor = Color.DarkSlateGray;
+        private bool[,] deck;
 
         private Game.Tetris tetrisGame;
 
@@ -281,7 +283,7 @@ namespace Tetris.Gui
                 graphics.Clear(BackColor);
                 foreach (var block in e.Blocks)
                 {
-                    DrawSingleBlock(graphics, block.X, block.Y, visibleColor);
+                    DrawSingleBlock(graphics, block.X, block.Y, GetColor(block.Status, BackColor), block.Status != BlockStatus.Hidden ? borderColor : hiddenColor);
                 }
             }
             nextTetrominoPicBox.Refresh();
@@ -293,7 +295,7 @@ namespace Tetris.Gui
             {
                 foreach (var block in e.Blocks)
                 {
-                    DrawSingleBlock(graphics, block.X, block.Y, vanishColor);
+                    DrawSingleBlock(graphics, block.X, block.Y, vanishColor, vanishColor);
                 }
                 gameDeckPicBox.Refresh();
 
@@ -301,7 +303,7 @@ namespace Tetris.Gui
 
                 foreach (var block in e.Blocks)
                 {
-                    DrawSingleBlock(graphics, block.X, block.Y, visibleColor);
+                    DrawSingleBlock(graphics, block.X, block.Y, GetColor(block.Status, hiddenColor), borderColor);
                 }
             }
             gameDeckPicBox.Refresh();
@@ -311,9 +313,16 @@ namespace Tetris.Gui
         {
             using (var graphics = Graphics.FromImage(gameDeckBitmap))
             {
-                foreach (var block in e.Blocks)
+                foreach (var block in e.Blocks.Where(s=>s.Y >= 0))
                 {
-                    DrawGhostBlock(graphics, block.X, block.Y, block.Status == BlockStatus.Visible ? ghostColor : BackColor);
+                    if (block.Status == BlockStatus.Hidden)
+                    {
+                        DrawGhostBlock(graphics, block.X, block.Y, BackColor);
+                    }
+                    else if (!deck[block.X, block.Y])
+                    {
+                        DrawGhostBlock(graphics, block.X, block.Y, borderColor);
+                    }
                 }
             }
             gameDeckPicBox.Refresh();
@@ -325,7 +334,8 @@ namespace Tetris.Gui
             {
                 foreach (var block in e.Blocks.Where(s => s.Y >= 0))
                 {
-                    DrawSingleBlock(graphics, block.X, block.Y, block.Status == BlockStatus.Visible ? visibleColor : hiddenColor);
+                    DrawSingleBlock(graphics, block.X, block.Y, GetColor(block.Status, hiddenColor), block.Status != BlockStatus.Hidden ? borderColor : hiddenColor);
+                    deck[block.X, block.Y] = block.Status != BlockStatus.Hidden;
                 }
             }
             gameDeckPicBox.Refresh();
@@ -336,7 +346,8 @@ namespace Tetris.Gui
             {
                 foreach (var block in e.Blocks.Where(s => s.Y < 0))
                 {
-                    DrawSingleBlock(graphics, block.X, tetrominoWidthHeightBlocks + block.Y, block.Status == BlockStatus.Visible ? visibleColor : BackColor);
+
+                    DrawSingleBlock(graphics, block.X, tetrominoWidthHeightBlocks + block.Y, GetColor(block.Status, BackColor), block.Status != BlockStatus.Hidden ? borderColor : BackColor);
                 }
             }
             headerPicBox.Refresh();
@@ -351,14 +362,14 @@ namespace Tetris.Gui
             }
         }
 
-        private void DrawSingleBlock(Graphics graphics, int x, int y, Color color)
+        private void DrawSingleBlock(Graphics graphics, int x, int y, Color color, Color borderColor)
         {
 
             //draw rectangle
             var currentX = x * (spaceBetweenBlocks + blockWidthHeight) + spaceBetweenBlocks + deckBorderWidth;
             var currentY = y * (spaceBetweenBlocks + blockWidthHeight) + spaceBetweenBlocks + deckBorderWidth;
             var blockRectangle = new Rectangle(currentX, currentY, blockWidthHeight, blockWidthHeight);
-            graphics.DrawRectangle(new Pen(color, 1), blockRectangle);
+            graphics.DrawRectangle(new Pen(borderColor, 1), blockRectangle);
 
             // fill inner rectangle
             blockRectangle.X += spaceBetweenBlockBorderAndInnerRectangle * 2;
@@ -382,6 +393,38 @@ namespace Tetris.Gui
         #endregion
 
         #region Other Methods
+
+        private Color GetColor(BlockStatus status, Color hiddenColor)
+        {
+            switch (status)
+            {
+                case BlockStatus.Hidden:
+
+                    return hiddenColor;
+                case BlockStatus.LightBlue:
+
+                    return Color.LightBlue;
+
+                case BlockStatus.DarkBlue:
+
+                    return Color.DarkBlue;
+
+                case BlockStatus.Orange:
+                    return Color.Orange;
+
+                case BlockStatus.Yellow:
+                    return Color.Yellow;
+
+                case BlockStatus.Green:
+                    return Color.Green;
+
+                case BlockStatus.Red:
+                    return Color.Red;
+
+                default:
+                    return Color.Magenta;
+            }
+        }
 
         private void DecorateFormControls()
         {
@@ -435,6 +478,7 @@ namespace Tetris.Gui
             tetrisGame.RowVanish += TetrisGame_RowVanish;
             tetrisGame.Score += TetrisGame_Score;
             tetrisGame.GhostBlocks += TetrisGame_GhostBlocks;
+            deck = new bool[deckWidth, deckHeight];
             DrawBoarder();
             tetrisGame.Start();
         }

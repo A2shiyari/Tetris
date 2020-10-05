@@ -10,9 +10,33 @@
         /// Block is hidden in deck
         /// </summary>
         Hidden,
+        ///// <summary>
+        ///// Block color is light blue in deck
+        ///// </summary>
+        LightBlue,
         /// <summary>
-        /// Block is visible in deck
+        /// Block color is dark blue in deck
         /// </summary>
-        Visible
+        DarkBlue,
+        /// <summary>
+        /// Block color is orange in deck
+        /// </summary>
+        Orange,
+        /// <summary>
+        /// Block color is yellow in deck
+        /// </summary>
+        Yellow,
+        /// <summary>
+        /// Block color is green in deck
+        /// </summary>
+        Green,
+        /// <summary>
+        /// Block color is red in deck
+        /// </summary>
+        Red,
+        /// <summary>
+        /// Block color is magenta in deck
+        /// </summary>
+        Magenta
     }
 }

@@ -32,10 +32,10 @@ namespace Tetris.Game.Tetriminoes
               'O' 'O'
            */
 
-            Blocks[0].Status = BlockStatus.Visible;
-            Blocks[1].Status = BlockStatus.Visible;
-            Blocks[2].Status = BlockStatus.Visible;
-            Blocks[3].Status = BlockStatus.Visible;
+            Blocks[0].Status = BlockStatus.Yellow;
+            Blocks[1].Status = BlockStatus.Yellow;
+            Blocks[2].Status = BlockStatus.Yellow;
+            Blocks[3].Status = BlockStatus.Yellow;
         }
 
         /// <summary>

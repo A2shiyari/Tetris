@@ -196,10 +196,10 @@ namespace Tetris.Game.Tetriminoes
                '03' 'I' '12' '16'
             */
 
-            Blocks[4].Status = BlockStatus.Visible;
-            Blocks[5].Status = BlockStatus.Visible;
-            Blocks[6].Status = BlockStatus.Visible;
-            Blocks[7].Status = BlockStatus.Visible;
+            Blocks[4].Status = BlockStatus.LightBlue;
+            Blocks[5].Status = BlockStatus.LightBlue;
+            Blocks[6].Status = BlockStatus.LightBlue;
+            Blocks[7].Status = BlockStatus.LightBlue;
         }
 
         #endregion
