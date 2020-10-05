@@ -29,11 +29,6 @@ namespace Tetris.Game
         /// </summary>
         private readonly Deck deck;
 
-        /// <summary>
-        /// Last tetromino type. This is used to avoid duplicate tetromino in a row
-        /// </summary>
-        private Type lastTetrominoType;
-
         #endregion
 
         #region Private Methods
@@ -63,8 +58,6 @@ namespace Tetris.Game
         public Tetrominos7BagRandomizer(Deck deck)
         {
             this.deck = deck;
-            tetrominoesBag.Add(new TTetromino(deck));
-            lastTetrominoType = this.GetType();
         }
 
         #endregion
@@ -81,17 +74,9 @@ namespace Tetris.Game
             {
                 FillBag();
             }
-            int number;
-            Tetromino tetromino;
-           
-            do
-            {
-                number = randomGenerator.Next(tetrominoesBag.Count);
-                tetromino = tetrominoesBag[number];
-            } while (lastTetrominoType == tetromino.GetType());
-
+            var number = randomGenerator.Next(tetrominoesBag.Count);
+            var tetromino = tetrominoesBag[number];
             tetrominoesBag.RemoveAt(number);
-            lastTetrominoType = tetromino.GetType();
             return tetromino;
         }
 
