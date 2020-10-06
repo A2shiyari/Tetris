@@ -1,4 +1,6 @@
-﻿namespace Tetris.Game.Results
+﻿using System.Collections.Generic;
+
+namespace Tetris.Game.Results
 {
 
     /// <summary>
@@ -20,9 +22,9 @@
         public VanishRowResult VanishRowResult { get; set; }
 
         /// <summary>
-        /// The next tetromino in case of move down reached the bottom of the deck or collided with a visible block
+        /// The next tetrominoes in case of move down reached the bottom of the deck or collided with a visible block
         /// </summary>
-        public Block[] NextTetromino { get; set; }
+        public List<Block[]> NextTetrominoes { get; set; }
 
         #endregion
 

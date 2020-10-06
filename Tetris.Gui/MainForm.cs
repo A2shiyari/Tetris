@@ -24,7 +24,7 @@ namespace Tetris.Gui
         private const int vanishDelayInterval = 200;
         private const int moveRightLeftTimerInterval = 65;
         private const int verticalSpaceBetweenUiElements = 20;
-        private const int horizontalSpaceBetweenUiElements = 100;
+        private const int horizontalSpaceBetweenUiElements = 50;
 
         #endregion
 
@@ -93,7 +93,7 @@ namespace Tetris.Gui
             }
         }
 
-        private void TetrisGame_NextTetromino(object sender, BlockEventArgs e)
+        private void TetrisGame_NextTetromino(object sender, NextTetrominoesEventArg e)
         {
             if (InvokeRequired)
             {
@@ -276,14 +276,19 @@ namespace Tetris.Gui
 
         #region Drawing Methods
 
-        private void DrawNextTetromino(BlockEventArgs e)
+        private void DrawNextTetromino(NextTetrominoesEventArg e)
         {
             using (var graphics = Graphics.FromImage(nextTetrominoBitmap))
             {
                 graphics.Clear(BackColor);
-                foreach (var block in e.Blocks)
+                var y = 0;
+                foreach (var tetro in e.NextTetrominoes)
                 {
-                    DrawSingleBlock(graphics, block.X, block.Y, GetColor(block.Status, BackColor), block.Status != BlockStatus.Hidden ? borderColor : hiddenColor);
+                    foreach (var block in tetro)
+                    {
+                        DrawSingleBlock(graphics, block.X, block.Y + y, GetColor(block.Status, BackColor), block.Status != BlockStatus.Hidden ? borderColor : hiddenColor);
+                    }
+                    y += tetrominoWidthHeightBlocks;
                 }
             }
             nextTetrominoPicBox.Refresh();
@@ -313,7 +318,7 @@ namespace Tetris.Gui
         {
             using (var graphics = Graphics.FromImage(gameDeckBitmap))
             {
-                foreach (var block in e.Blocks.Where(s=>s.Y >= 0))
+                foreach (var block in e.Blocks.Where(s => s.Y >= 0))
                 {
                     if (block.Status == BlockStatus.Hidden)
                     {
@@ -428,7 +433,7 @@ namespace Tetris.Gui
 
         private void DecorateFormControls()
         {
-            gameDeckPicBox.Left = Width / 2 - gameDeckPicBox.Width / 2 - scoreGrp.Width / 2;
+            gameDeckPicBox.Left = (Width - gameDeckPicBox.Width - scoreGrp.Width - nextTetrominoPicBox.Width - horizontalSpaceBetweenUiElements*2) / 2;
             gameDeckPicBox.Top = Height / 2 - gameDeckPicBox.Height / 2;
 
             headerPicBox.Left = gameDeckPicBox.Left;
@@ -441,8 +446,8 @@ namespace Tetris.Gui
             nextTetrominoPicBox.Top = gameDeckPicBox.Top + verticalSpaceBetweenUiElements;
             nextTetrominoPicBox.Left = gameDeckPicBox.Left + gameDeckPicBox.Width + horizontalSpaceBetweenUiElements;
 
-            scoreGrp.Top = nextTetrominoPicBox.Top + nextTetrominoPicBox.Height + verticalSpaceBetweenUiElements;
-            scoreGrp.Left = nextTetrominoPicBox.Left;
+            scoreGrp.Top = gameDeckPicBox.Top;
+            scoreGrp.Left = nextTetrominoPicBox.Left + nextTetrominoPicBox.Width + horizontalSpaceBetweenUiElements;
 
             shortcutsGrp.Left = scoreGrp.Left;
             shortcutsGrp.Top = scoreGrp.Top + scoreGrp.Height + verticalSpaceBetweenUiElements;
@@ -461,7 +466,7 @@ namespace Tetris.Gui
             }
 
             gameDeckBitmap = new Bitmap(gameDeckwidth, gameDeckHeight, System.Drawing.Imaging.PixelFormat.Format32bppPArgb);
-            nextTetrominoBitmap = new Bitmap(tetrominoWidthHeightBlocks * (blockWidthHeight + spaceBetweenBlocks), tetrominoWidthHeightBlocks * (blockWidthHeight + spaceBetweenBlocks) + 10, System.Drawing.Imaging.PixelFormat.Format32bppPArgb);
+            nextTetrominoBitmap = new Bitmap(tetrominoWidthHeightBlocks * (blockWidthHeight + spaceBetweenBlocks) + 10, tetrominoWidthHeightBlocks * (blockWidthHeight + spaceBetweenBlocks) * 5 + 10, System.Drawing.Imaging.PixelFormat.Format32bppPArgb);
             headerBitmap = new Bitmap(gameDeckwidth, tetrominoWidthHeightBlocks * (blockWidthHeight + spaceBetweenBlocks) + deckBorderWidth + 1);
 
             gameDeckPicBox.Image = gameDeckBitmap;
@@ -474,7 +479,7 @@ namespace Tetris.Gui
             tetrisGame = new Game.Tetris(deckWidth, deckHeight);
             tetrisGame.ChangedBlocks += TetrisGame_ChangedBlocks;
             tetrisGame.GameOver += TetrisGame_GameOver;
-            tetrisGame.NextTetromino += TetrisGame_NextTetromino;
+            tetrisGame.NextTetrominoes += TetrisGame_NextTetromino;
             tetrisGame.RowVanish += TetrisGame_RowVanish;
             tetrisGame.Score += TetrisGame_Score;
             tetrisGame.GhostBlocks += TetrisGame_GhostBlocks;

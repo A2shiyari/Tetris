@@ -1,4 +1,6 @@
-﻿namespace Tetris.Game.Results
+﻿using System.Collections.Generic;
+
+namespace Tetris.Game.Results
 {
 
     /// <summary>
@@ -7,12 +9,12 @@
     internal class TetrominoInitializationResult : ChangeResult
     {
 
-        #region Public Properties
+        #region Public Properties 
 
         /// <summary>
-        /// Next tetromino blocks
+        /// Next tetrominoes blocks
         /// </summary>
-        public Block[] NextTetromino { get; set; }
+        public List<Block[]> NextTetrominoes { get; set; }
 
         #endregion
 

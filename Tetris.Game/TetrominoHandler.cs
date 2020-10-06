@@ -21,9 +21,9 @@ namespace Tetris.Game
         private Tetromino current;
 
         /// <summary>
-        /// Game next tetromino
+        /// Game next tetrominoes
         /// </summary>
-        private Tetromino next;
+        private Queue<Tetromino> next;
 
         /// <summary>
         /// Game deck
@@ -39,6 +39,11 @@ namespace Tetris.Game
         /// tetromino generator based on 7 bag algorithm
         /// </summary>
         private readonly Tetrominos7BagRandomizer tetrominos7Bag;
+
+        /// <summary>
+        /// number of tetrominoes in queue for preview box
+        /// </summary>
+        private readonly int nextTetrominoesQueueLenght = 5;
 
         #endregion
 
@@ -93,6 +98,7 @@ namespace Tetris.Game
         {
             this.deck = deck;
             tetrominos7Bag = new Tetrominos7BagRandomizer(deck);
+            next = new Queue<Tetromino>(nextTetrominoesQueueLenght);
         }
 
         #endregion
@@ -115,12 +121,16 @@ namespace Tetris.Game
         public TetrominoInitializationResult Initialize()
         {
             current = GenerateNewTetromino();
-            next = GenerateNewTetromino();
+            for (var i = 0; i < nextTetrominoesQueueLenght; i++)
+            {
+                next.Enqueue(GenerateNewTetromino());
+            }
             ghostBlocks = deck.GetGhostBlocks(current.VisibleBlocks);
+
             return new TetrominoInitializationResult
             {
                 ChangedBlocks = current.VisibleBlocks,
-                NextTetromino = next.BaseBlocks,
+                NextTetrominoes = next.Select(s => s.BaseBlocks).ToList(),
                 GhostBlocks = ghostBlocks
             };
         }
@@ -145,20 +155,18 @@ namespace Tetris.Game
         {
             var moveDownResult = current.MoveDown();
 
-            
-
             if (moveDownResult.GameOver || moveDownResult.ChangedBlocks != null)
             {
                 SetLastMove(moveDownResult);
                 return moveDownResult;
             }
 
-            current = next;
-            next = GenerateNewTetromino();
+            current = next.Dequeue();
+            next.Enqueue(GenerateNewTetromino());
 
             moveDownResult.ChangedBlocks = current.VisibleBlocks;
-            
-            moveDownResult.NextTetromino = next.BaseBlocks;
+
+            moveDownResult.NextTetrominoes = next.Select(s => s.BaseBlocks).ToList();
             CalculateGhostBlock(moveDownResult);
 
             SetLastMove(moveDownResult);

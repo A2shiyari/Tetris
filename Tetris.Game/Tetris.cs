@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using Tetris.Game.Results;
@@ -155,7 +156,7 @@ namespace Tetris.Game
         {
             tetrominoHandler = new TetrominoHandler(deck);
             var initialResult = tetrominoHandler.Initialize();
-            OnNextTetromino(initialResult.NextTetromino);
+            OnNextTetrominoes(initialResult.NextTetrominoes);
             OnChangedBlocks(initialResult.ChangedBlocks);
             OnGhostBlocks(initialResult.GhostBlocks);
         }
@@ -260,9 +261,9 @@ namespace Tetris.Game
                 OnGhostBlocks(moveDownResult.GhostBlocks);
             }
 
-            if (moveDownResult.NextTetromino != null)
+            if (moveDownResult.NextTetrominoes != null)
             {
-                OnNextTetromino(moveDownResult.NextTetromino);
+                OnNextTetrominoes(moveDownResult.NextTetrominoes);
                 return true;
             }
             return false;
@@ -313,7 +314,7 @@ namespace Tetris.Game
         /// <summary>
         /// Occures when next tetromino is available
         /// </summary>
-        public event EventHandler<BlockEventArgs> NextTetromino;
+        public event EventHandler<NextTetrominoesEventArg> NextTetrominoes;
 
         /// <summary>
         /// Occures when blocks change in deck
@@ -553,10 +554,10 @@ namespace Tetris.Game
         /// <summary>
         /// Invokes the NextTetromino event
         /// </summary>
-        /// <param name="nextTetrominoBlocks"></param>
-        protected virtual void OnNextTetromino(Block[] nextTetrominoBlocks)
+        /// <param name="nextTetrominoesBlocks"></param>
+        protected virtual void OnNextTetrominoes(List<Block[]> nextTetrominoesBlocks)
         {
-            NextTetromino?.Invoke(this, new BlockEventArgs(nextTetrominoBlocks));
+            NextTetrominoes?.Invoke(this, new NextTetrominoesEventArg(nextTetrominoesBlocks));
         }
 
         /// <summary>
