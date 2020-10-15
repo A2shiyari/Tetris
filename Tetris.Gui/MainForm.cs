@@ -22,9 +22,10 @@ namespace Tetris.Gui
         private const int spaceBetweenBlockBorderAndInnerRectangle = 1;
         private const int deckBorderWidth = 5;
         private const int vanishDelayInterval = 200;
-        private const int moveRightLeftTimerInterval = 65;
         private const int verticalSpaceBetweenUiElements = 20;
         private const int horizontalSpaceBetweenUiElements = 50;
+        private const int moveDownDelayInterval = 50;
+        private const int moveLeftRightDelayInterval = 120;
 
         #endregion
 
@@ -39,14 +40,15 @@ namespace Tetris.Gui
 
         private Game.Tetris tetrisGame;
 
+        private Bitmap gameDeckBitmap;
+        private Bitmap nextTetrominoBitmap;
+        private Bitmap holdTetrominoBitmap;
+        private Bitmap headerBitmap;
+
+        ManualResetEvent mre = new ManualResetEvent(false);
         private bool moveDown;
         private bool moveLeft;
         private bool moveRight;
-        private readonly Timer movementTimer = new Timer { Interval = 5 };
-
-        private Bitmap gameDeckBitmap;
-        private Bitmap nextTetrominoBitmap;
-        private Bitmap headerBitmap;
 
         #endregion
 
@@ -153,6 +155,21 @@ namespace Tetris.Gui
             }
         }
 
+        private void TetrisGame_HoldTetromino(object sender, BlockEventArgs e)
+        {
+            if (InvokeRequired)
+            {
+                BeginInvoke(new Action(() =>
+                {
+                    DrawHoldTetromino(e);
+                }));
+            }
+            else
+            {
+                DrawHoldTetromino(e);
+            }
+        }
+
         #endregion
 
         #region Form Events
@@ -173,11 +190,6 @@ namespace Tetris.Gui
                     moveRight = false;
                     break;
             }
-
-            if (!(moveDown || moveLeft || moveRight))
-            {
-                movementTimer.Stop();
-            }
         }
 
         private void MainFrom_KeyDown(object sender, KeyEventArgs e)
@@ -189,25 +201,18 @@ namespace Tetris.Gui
                     return;
 
                 case Keys.Down:
-                    movementTimer.Interval = 25;
                     moveDown = true;
-                    movementTimer.Start();
+                    mre.Set();
                     break;
 
                 case Keys.Left:
-                    tetrisGame.MoveLeft();
-                    Thread.Sleep(moveRightLeftTimerInterval);
-                    movementTimer.Interval = moveRightLeftTimerInterval;
                     moveLeft = true;
-                    movementTimer.Start();
+                    mre.Set();
                     break;
 
                 case Keys.Right:
-                    tetrisGame.MoveRight();
-                    Thread.Sleep(moveRightLeftTimerInterval);
-                    movementTimer.Interval = moveRightLeftTimerInterval;
                     moveRight = true;
-                    movementTimer.Start();
+                    mre.Set();
                     break;
 
                 case Keys.P:
@@ -234,6 +239,10 @@ namespace Tetris.Gui
                     tetrisGame.GhostBlocksVisible = !tetrisGame.GhostBlocksVisible;
                     break;
 
+                case Keys.H:
+                    tetrisGame.Hold();
+                    break;
+
             }
         }
 
@@ -241,13 +250,11 @@ namespace Tetris.Gui
         {
             InitializeDrawingBitmaps();
             DecorateFormControls();
-            InitializeTetrisGame();
-            movementTimer.Tick += MovementTimer_Tick;
+            InitializeTetrisGame();            
         }
 
         private void MainFrom_Deactivate(object sender, EventArgs e)
         {
-            movementTimer.Stop();
             tetrisGame.Pause();
         }
 
@@ -395,6 +402,19 @@ namespace Tetris.Gui
             graphics.DrawRectangle(new Pen(color, 1), blockRectangle);
         }
 
+        private void DrawHoldTetromino(BlockEventArgs e)
+        {
+            using (var graphics = Graphics.FromImage(holdTetrominoBitmap))
+            {
+                graphics.Clear(BackColor);
+                foreach (var block in e.Blocks)
+                {
+                    DrawSingleBlock(graphics, block.X, block.Y, GetColor(block.Status, BackColor), block.Status != BlockStatus.Hidden ? borderColor : hiddenColor);
+                }
+            }
+            holdTetrominoPicBox.Refresh();
+        }
+
         #endregion
 
         #region Other Methods
@@ -433,7 +453,7 @@ namespace Tetris.Gui
 
         private void DecorateFormControls()
         {
-            gameDeckPicBox.Left = (Width - gameDeckPicBox.Width - scoreGrp.Width - nextTetrominoPicBox.Width - horizontalSpaceBetweenUiElements*2) / 2;
+            gameDeckPicBox.Left = (Width - gameDeckPicBox.Width - scoreGrp.Width - nextTetrominoPicBox.Width - horizontalSpaceBetweenUiElements*2 - holdTetrominoPicBox.Width) / 2;
             gameDeckPicBox.Top = Height / 2 - gameDeckPicBox.Height / 2;
 
             headerPicBox.Left = gameDeckPicBox.Left;
@@ -451,6 +471,11 @@ namespace Tetris.Gui
 
             shortcutsGrp.Left = scoreGrp.Left;
             shortcutsGrp.Top = scoreGrp.Top + scoreGrp.Height + verticalSpaceBetweenUiElements;
+
+            holdTetrominoPicBox.Top = gameDeckPicBox.Top+ verticalSpaceBetweenUiElements;
+            holdTetrominoPicBox.Left = gameDeckPicBox.Left - holdTetrominoPicBox.Width - horizontalSpaceBetweenUiElements;
+            holdLbl.Top = gameDeckPicBox.Top;
+            holdLbl.Left = holdTetrominoPicBox.Left;
         }
 
         private void InitializeDrawingBitmaps()
@@ -466,12 +491,14 @@ namespace Tetris.Gui
             }
 
             gameDeckBitmap = new Bitmap(gameDeckwidth, gameDeckHeight, System.Drawing.Imaging.PixelFormat.Format32bppPArgb);
-            nextTetrominoBitmap = new Bitmap(tetrominoWidthHeightBlocks * (blockWidthHeight + spaceBetweenBlocks) + 10, tetrominoWidthHeightBlocks * (blockWidthHeight + spaceBetweenBlocks) * 5 + 10, System.Drawing.Imaging.PixelFormat.Format32bppPArgb);
+            nextTetrominoBitmap = new Bitmap(tetrominoWidthHeightBlocks * (blockWidthHeight + spaceBetweenBlocks) + 10, tetrominoWidthHeightBlocks * (blockWidthHeight + spaceBetweenBlocks) *5 + 10, System.Drawing.Imaging.PixelFormat.Format32bppPArgb);
             headerBitmap = new Bitmap(gameDeckwidth, tetrominoWidthHeightBlocks * (blockWidthHeight + spaceBetweenBlocks) + deckBorderWidth + 1);
+            holdTetrominoBitmap = new Bitmap(tetrominoWidthHeightBlocks * (blockWidthHeight + spaceBetweenBlocks) + 10, tetrominoWidthHeightBlocks * (blockWidthHeight + spaceBetweenBlocks)  + 10, System.Drawing.Imaging.PixelFormat.Format32bppPArgb);
 
             gameDeckPicBox.Image = gameDeckBitmap;
             nextTetrominoPicBox.Image = nextTetrominoBitmap;
             headerPicBox.Image = headerBitmap;
+            holdTetrominoPicBox.Image = holdTetrominoBitmap;
         }
 
         private void InitializeTetrisGame()
@@ -483,9 +510,11 @@ namespace Tetris.Gui
             tetrisGame.RowVanish += TetrisGame_RowVanish;
             tetrisGame.Score += TetrisGame_Score;
             tetrisGame.GhostBlocks += TetrisGame_GhostBlocks;
+            tetrisGame.HoldTetromino += TetrisGame_HoldTetromino;
             deck = new bool[deckWidth, deckHeight];
             DrawBoarder();
-            tetrisGame.Start();
+            new Thread(DoMovement) { IsBackground = true }.Start();
+            tetrisGame.Start( Level.Ten);
         }
 
         private void UpdateScores(ScoreEventArgs scoreEventArgs)
@@ -495,28 +524,41 @@ namespace Tetris.Gui
             levelLbl.Text = scoreEventArgs.Level.ToString();
         }
 
-        private void MovementTimer_Tick(object sender, EventArgs e)
-        {
-            if (moveLeft)
-            {
-                tetrisGame.MoveLeft();
-                return;
-            }
-            if (moveRight)
-            {
-                tetrisGame.MoveRight();
-                return;
-            }
-            if (moveDown)
-            {
-                tetrisGame.MoveDown();
-                return;
-            }
-        }
-
         private void GameOver()
         {
             MessageBox.Show(this, "Game Over");
+        }
+
+        private void DoMovement()
+        {
+            while (true)
+            {
+                mre.WaitOne();
+                do
+                {
+                    if (moveRight)
+                    {
+                        tetrisGame.MoveRight();
+                        Thread.Sleep(moveLeftRightDelayInterval);
+                    }
+                    else if (moveLeft)
+                    {
+                        tetrisGame.MoveLeft();
+                        Thread.Sleep(moveLeftRightDelayInterval);
+                    }
+                    else if (moveDown)
+                    {
+                        tetrisGame.MoveDown();
+                        Thread.Sleep(moveDownDelayInterval);
+                    }
+                    else
+                    {
+                        break;
+                    }
+
+                } while (true);
+                mre.Reset();
+            }
         }
 
         #endregion
