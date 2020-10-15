@@ -336,6 +336,11 @@ namespace Tetris.Game
         /// </summary>
         public event EventHandler<BlockEventArgs> GhostBlocks;
 
+        /// <summary>
+        /// Occures when holds a tetromino
+        /// </summary>
+        public event EventHandler<BlockEventArgs> HoldTetromino;
+
         #endregion
 
         #region Public Properties
@@ -527,6 +532,31 @@ namespace Tetris.Game
             hardDrop = false;
         }
 
+        /// <summary>
+        /// Holds the current tetromino
+        /// </summary>
+        public void Hold()
+        {
+            if (Status != GameStatus.Running)
+            {
+                return;
+            }
+            lock (synchronizationToken)
+            {
+                var holdResult = tetrominoHandler.Hold();
+                SetLastMove(holdResult);
+                if (holdResult != null)
+                {
+                    OnHoldTetromino(holdResult.HoldBlocks);
+                    OnChangedBlocks(holdResult.ChangedBlocks);
+                    if (holdResult.GhostBlocks != null)
+                    {
+                        OnGhostBlocks(holdResult.GhostBlocks);
+                    }
+                }
+            }
+        }
+
         #endregion
 
         #region Protected Methods
@@ -584,6 +614,15 @@ namespace Tetris.Game
         public virtual void OnGhostBlocks(Block[] ghostBlocks)
         {
             GhostBlocks?.Invoke(this, new BlockEventArgs(ghostBlocks));
+        }
+
+        /// <summary>
+        /// Invokes the HoldTetromino event
+        /// </summary>
+        /// <param name="holdBlocks"></param>
+        public virtual void OnHoldTetromino(Block[] holdBlocks)
+        {
+            HoldTetromino?.Invoke(this, new BlockEventArgs(holdBlocks));
         }
 
         #endregion

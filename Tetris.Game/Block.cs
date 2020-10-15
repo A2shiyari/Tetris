@@ -63,12 +63,12 @@
         /// <summary>
         /// X postion of the block in deck
         /// </summary>
-        public int X { get; private set; }
+        public int X { get; set; }
 
         /// <summary>
         /// Y position of the block in deck
         /// </summary>
-        public int Y { get; private set; }
+        public int Y { get; set; }
 
         /// <summary>
         /// Status of the block in deck

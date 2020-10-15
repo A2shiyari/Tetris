@@ -320,6 +320,21 @@ namespace Tetris.Game.Tetriminoes
             return new[] { new ChangeResult() { ChangedBlocks = changedBlocks } };
         }
 
+        /// <summary>
+        /// Moves the tetromino in top middle of the deck
+        /// </summary>
+        public void ResetToTopMiddle()
+        {
+            for (var i = 0; i < tetrominoWidthHeight; i++)
+            {
+                for (var j = 0; j < tetrominoWidthHeight; j++)
+                {
+                    Blocks[i * tetrominoWidthHeight + j].X = deck.Width / 2 - tetrominoWidthHeight / 2 + i;
+                    Blocks[i * tetrominoWidthHeight + j].Y = j - tetrominoWidthHeight;                    
+                }
+            }
+        }
+
         #endregion
 
         #region Protected Properties
@@ -384,7 +399,6 @@ namespace Tetris.Game.Tetriminoes
             }
             return true;
         }
-
 
         /// <summary>
         /// This method is for specyfing tetromino visible blocks in derived classes

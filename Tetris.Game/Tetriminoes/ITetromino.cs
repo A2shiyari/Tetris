@@ -190,16 +190,16 @@ namespace Tetris.Game.Tetriminoes
         {
 
             /*  
-               '00' '04' '08' '12'
-               '01' '05' '09' '13'
-               'II' 'II' 'II' 'II'
-               '03' '07' '11' '15'
+               '00' 'II' '08' '12'
+               '01' 'II' '09' '13'
+               '02' 'II' '10' '14'
+               '03' 'II' '11' '15'
             */
 
-            Blocks[2].Status = BlockStatus.LightBlue;
+            Blocks[4].Status = BlockStatus.LightBlue;
+            Blocks[5].Status = BlockStatus.LightBlue;
             Blocks[6].Status = BlockStatus.LightBlue;
-            Blocks[10].Status = BlockStatus.LightBlue;
-            Blocks[14].Status = BlockStatus.LightBlue;
+            Blocks[7].Status = BlockStatus.LightBlue;
         }
 
         #endregion
