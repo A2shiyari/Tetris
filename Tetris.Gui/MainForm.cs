@@ -514,7 +514,7 @@ namespace Tetris.Gui
             deck = new bool[deckWidth, deckHeight];
             DrawBoarder();
             new Thread(DoMovement) { IsBackground = true }.Start();
-            tetrisGame.Start( Level.Ten);
+            tetrisGame.Start( );
         }
 
         private void UpdateScores(ScoreEventArgs scoreEventArgs)
