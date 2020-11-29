@@ -255,11 +255,14 @@ namespace Tetris.Game
                 changedBlocks.Add(new Block(item, BlockStatus.Hidden));
             }
 
+            var holdResult = new HoldResult();
+
             if (held == null)
             {    
                 held = current;
                 current = next.Dequeue();
-                next.Enqueue(GenerateNewTetromino());   
+                next.Enqueue(GenerateNewTetromino());  
+                holdResult.NextTetrominoes =  next.Select(s => s.BaseBlocks).ToList();
             }
             else
             {
@@ -273,15 +276,13 @@ namespace Tetris.Game
             {
                 changedBlocks.Add(new Block(item));
             }
-            var changedResult = new HoldResult
-            {
-                HoldBlocks = held.BaseBlocks,
-                ChangedBlocks = changedBlocks.ToArray()
-            };
-            CalculateGhostBlock(changedResult);
-            SetLastMove(changedResult);
+
+            holdResult.HoldBlocks = held.BaseBlocks;
+            holdResult.ChangedBlocks = changedBlocks.ToArray();
+            CalculateGhostBlock(holdResult);
+            SetLastMove(holdResult);
             holdIsPossible = false;
-            return changedResult;
+            return holdResult;
         }
 
         #endregion

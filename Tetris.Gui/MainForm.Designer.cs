@@ -39,6 +39,7 @@
             this.linesLbl = new System.Windows.Forms.Label();
             this.nextLbl = new System.Windows.Forms.Label();
             this.shortcutsGrp = new System.Windows.Forms.GroupBox();
+            this.holdTetrominoLbl = new System.Windows.Forms.Label();
             this.exitGameLbl = new System.Windows.Forms.Label();
             this.restartGameLbl = new System.Windows.Forms.Label();
             this.resumeGameLbl = new System.Windows.Forms.Label();
@@ -46,6 +47,7 @@
             this.ghostOnOffLbl = new System.Windows.Forms.Label();
             this.hardDropLbl = new System.Windows.Forms.Label();
             this.moveDownLbl = new System.Windows.Forms.Label();
+            this.holdKeyLbl = new System.Windows.Forms.Label();
             this.escapeKeyLbl = new System.Windows.Forms.Label();
             this.enterKeyLbl = new System.Windows.Forms.Label();
             this.rKeyLbl = new System.Windows.Forms.Label();
@@ -62,7 +64,6 @@
             this.headerPicBox = new System.Windows.Forms.PictureBox();
             this.holdTetrominoPicBox = new System.Windows.Forms.PictureBox();
             this.holdLbl = new System.Windows.Forms.Label();
-            this.holdTetrominoLbl = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.gameDeckPicBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nextTetrominoPicBox)).BeginInit();
             this.scoreGrp.SuspendLayout();
@@ -183,6 +184,7 @@
             this.shortcutsGrp.Controls.Add(this.ghostOnOffLbl);
             this.shortcutsGrp.Controls.Add(this.hardDropLbl);
             this.shortcutsGrp.Controls.Add(this.moveDownLbl);
+            this.shortcutsGrp.Controls.Add(this.holdKeyLbl);
             this.shortcutsGrp.Controls.Add(this.escapeKeyLbl);
             this.shortcutsGrp.Controls.Add(this.enterKeyLbl);
             this.shortcutsGrp.Controls.Add(this.rKeyLbl);
@@ -201,6 +203,16 @@
             this.shortcutsGrp.Size = new System.Drawing.Size(238, 302);
             this.shortcutsGrp.TabIndex = 1;
             this.shortcutsGrp.TabStop = false;
+            // 
+            // holdTetrominoLbl
+            // 
+            this.holdTetrominoLbl.AutoSize = true;
+            this.holdTetrominoLbl.Font = new System.Drawing.Font("Segoe UI Semibold", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            this.holdTetrominoLbl.Location = new System.Drawing.Point(21, 274);
+            this.holdTetrominoLbl.Name = "holdTetrominoLbl";
+            this.holdTetrominoLbl.Size = new System.Drawing.Size(36, 15);
+            this.holdTetrominoLbl.TabIndex = 0;
+            this.holdTetrominoLbl.Text = "Hold:";
             // 
             // exitGameLbl
             // 
@@ -271,6 +283,16 @@
             this.moveDownLbl.Size = new System.Drawing.Size(75, 15);
             this.moveDownLbl.TabIndex = 0;
             this.moveDownLbl.Text = "Move Down:";
+            // 
+            // holdKeyLbl
+            // 
+            this.holdKeyLbl.AutoSize = true;
+            this.holdKeyLbl.Font = new System.Drawing.Font("Segoe UI Semibold", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            this.holdKeyLbl.Location = new System.Drawing.Point(118, 274);
+            this.holdKeyLbl.Name = "holdKeyLbl";
+            this.holdKeyLbl.Size = new System.Drawing.Size(38, 15);
+            this.holdKeyLbl.TabIndex = 0;
+            this.holdKeyLbl.Text = "H Key";
             // 
             // escapeKeyLbl
             // 
@@ -430,16 +452,6 @@
             this.holdLbl.TabIndex = 0;
             this.holdLbl.Text = "Hold";
             // 
-            // holdTetrominoLbl
-            // 
-            this.holdTetrominoLbl.AutoSize = true;
-            this.holdTetrominoLbl.Font = new System.Drawing.Font("Segoe UI Semibold", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
-            this.holdTetrominoLbl.Location = new System.Drawing.Point(21, 274);
-            this.holdTetrominoLbl.Name = "holdTetrominoLbl";
-            this.holdTetrominoLbl.Size = new System.Drawing.Size(36, 15);
-            this.holdTetrominoLbl.TabIndex = 0;
-            this.holdTetrominoLbl.Text = "Hold:";
-            // 
             // MainFrom
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
@@ -514,6 +526,7 @@
         private System.Windows.Forms.PictureBox holdTetrominoPicBox;
         private System.Windows.Forms.Label holdLbl;
         private System.Windows.Forms.Label holdTetrominoLbl;
+        private System.Windows.Forms.Label holdKeyLbl;
     }
 }
 

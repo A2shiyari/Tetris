@@ -240,19 +240,54 @@ namespace Tetris.Game
                 GameIsOver();
                 return true;
             }
+            if (moveDownResult.ChangedBlocks != null)
+            {
+                OnChangedBlocks(moveDownResult.ChangedBlocks);
+            }
 
             if (!hardDrop)
             {
                 SetLastMove(moveDownResult);
             }
 
-            if (moveDownResult.ChangedBlocks != null)
-            {
-                OnChangedBlocks(moveDownResult.ChangedBlocks);
-            }
-
             if (moveDownResult.VanishRowResult != null)
             {
+                if (hardDrop)
+                {
+                    switch (moveDownResult.VanishRowResult.VanishedRowCount)
+                    {
+                        case 1:
+                            OnGameEvents(GameEvent.HardDropWithOneLineClear);
+                            break;
+                        case 2:
+                            OnGameEvents(GameEvent.HardDropWithTwoLinesClear);
+                            break;
+                        case 3:
+                            OnGameEvents(GameEvent.HardDropWithThreeLinesClear);
+                            break;
+                        case 4:
+                            OnGameEvents(GameEvent.HardDropWithFourLinesClear);
+                            break;
+                    }
+                }
+                else
+                {
+                    switch (moveDownResult.VanishRowResult.VanishedRowCount)
+                    {
+                        case 1:
+                            OnGameEvents(GameEvent.OneLineCleared);
+                            break;
+                        case 2:
+                            OnGameEvents(GameEvent.TwoLinesCleared);
+                            break;
+                        case 3:
+                            OnGameEvents(GameEvent.ThreeLinesCleared);
+                            break;
+                        case 4:
+                            OnGameEvents(GameEvent.FourLinesCleared);
+                            break;
+                    }
+                }
                 ProcessVanishRowResult(moveDownResult.VanishRowResult, hardDrop);
             }
 
@@ -263,6 +298,14 @@ namespace Tetris.Game
 
             if (moveDownResult.NextTetrominoes != null)
             {
+                if (!hardDrop && moveDownResult.VanishRowResult == null)
+                {
+                    OnGameEvents(GameEvent.TetrominoLocked);
+                }
+                else if (moveDownResult.VanishRowResult == null)
+                {
+                    OnGameEvents(GameEvent.HardDrop);
+                }
                 OnNextTetrominoes(moveDownResult.NextTetrominoes);
                 return true;
             }
@@ -341,6 +384,11 @@ namespace Tetris.Game
         /// </summary>
         public event EventHandler<BlockEventArgs> HoldTetromino;
 
+        /// <summary>
+        /// Occures when something happens in the game
+        /// </summary>
+        public event EventHandler<GameEventsEventArgs> GameEvents;
+
         #endregion
 
         #region Public Properties
@@ -396,11 +444,16 @@ namespace Tetris.Game
                 SetLastMove(moveResult);
                 if (moveResult != null)
                 {
+                    OnGameEvents(GameEvent.MoveRightSuccessful);
                     if (moveResult.GhostBlocks != null)
                     {
                         OnGhostBlocks(moveResult.GhostBlocks);
                     }
                     OnChangedBlocks(moveResult.ChangedBlocks);
+                }
+                else
+                {
+                    OnGameEvents(GameEvent.MoveRightFailed);
                 }
             }
         }
@@ -420,11 +473,16 @@ namespace Tetris.Game
                 SetLastMove(moveResult);
                 if (moveResult != null)
                 {
+                    OnGameEvents(GameEvent.MoveLeftSuccessful);
                     if (moveResult.GhostBlocks != null)
                     {
                         OnGhostBlocks(moveResult.GhostBlocks);
                     }
                     OnChangedBlocks(moveResult.ChangedBlocks);
+                }
+                else
+                {
+                    OnGameEvents(GameEvent.MoveLeftFailed);
                 }
             }
         }
@@ -457,13 +515,21 @@ namespace Tetris.Game
             {
                 var rotateResult = tetrominoHandler.Rotate();
                 SetLastMove(rotateResult.LastOrDefault());
-                foreach (var changeResult in rotateResult)
+                if (rotateResult.Length > 0)
                 {
-                    if (changeResult.GhostBlocks != null)
+                    OnGameEvents(GameEvent.RotationSuccessful);
+                    foreach (var changeResult in rotateResult)
                     {
-                        OnGhostBlocks(changeResult.GhostBlocks);
+                        if (changeResult.GhostBlocks != null)
+                        {
+                            OnGhostBlocks(changeResult.GhostBlocks);
+                        }
+                        OnChangedBlocks(changeResult.ChangedBlocks);
                     }
-                    OnChangedBlocks(changeResult.ChangedBlocks);
+                }
+                else
+                {
+                    OnGameEvents(GameEvent.RotationFailed);
                 }
             }
         }
@@ -547,12 +613,21 @@ namespace Tetris.Game
                 SetLastMove(holdResult);
                 if (holdResult != null)
                 {
+                    OnGameEvents(GameEvent.HoldSuccessful);
                     OnHoldTetromino(holdResult.HoldBlocks);
                     OnChangedBlocks(holdResult.ChangedBlocks);
                     if (holdResult.GhostBlocks != null)
                     {
                         OnGhostBlocks(holdResult.GhostBlocks);
                     }
+                    if (holdResult.NextTetrominoes != null)
+                    {
+                        OnNextTetrominoes(holdResult.NextTetrominoes);
+                    }
+                }
+                else
+                {
+                    OnGameEvents(GameEvent.HoldFailed);
                 }
             }
         }
@@ -611,7 +686,7 @@ namespace Tetris.Game
         /// Invokes the GhostBlocks event
         /// </summary>
         /// <param name="ghostBlocks"></param>
-        public virtual void OnGhostBlocks(Block[] ghostBlocks)
+        protected virtual void OnGhostBlocks(Block[] ghostBlocks)
         {
             GhostBlocks?.Invoke(this, new BlockEventArgs(ghostBlocks));
         }
@@ -620,9 +695,18 @@ namespace Tetris.Game
         /// Invokes the HoldTetromino event
         /// </summary>
         /// <param name="holdBlocks"></param>
-        public virtual void OnHoldTetromino(Block[] holdBlocks)
+        protected virtual void OnHoldTetromino(Block[] holdBlocks)
         {
             HoldTetromino?.Invoke(this, new BlockEventArgs(holdBlocks));
+        }
+
+        /// <summary>
+        /// Invokes the GameEvents event
+        /// </summary>
+        /// <param name="gameEvent"></param>
+        protected virtual void OnGameEvents(GameEvent gameEvent)
+        {
+            GameEvents?.Invoke(this, new GameEventsEventArgs(gameEvent));
         }
 
         #endregion

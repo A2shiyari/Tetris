@@ -170,6 +170,21 @@ namespace Tetris.Gui
             }
         }
 
+        private void TetrisGame_GameEvents(object sender, GameEventsEventArgs e)
+        {
+            if (InvokeRequired)
+            {
+                BeginInvoke(new Action(() =>
+                {
+                    ProcessGameEvents(e);
+                }));
+            }
+            else
+            {
+                ProcessGameEvents(e);
+            }
+        }
+
         #endregion
 
         #region Form Events
@@ -250,7 +265,7 @@ namespace Tetris.Gui
         {
             InitializeDrawingBitmaps();
             DecorateFormControls();
-            InitializeTetrisGame();            
+            InitializeTetrisGame();
         }
 
         private void MainFrom_Deactivate(object sender, EventArgs e)
@@ -453,7 +468,7 @@ namespace Tetris.Gui
 
         private void DecorateFormControls()
         {
-            gameDeckPicBox.Left = (Width - gameDeckPicBox.Width - scoreGrp.Width - nextTetrominoPicBox.Width - horizontalSpaceBetweenUiElements*2 - holdTetrominoPicBox.Width) / 2;
+            gameDeckPicBox.Left = (Width - gameDeckPicBox.Width - scoreGrp.Width - nextTetrominoPicBox.Width - horizontalSpaceBetweenUiElements * 2 - holdTetrominoPicBox.Width) / 2;
             gameDeckPicBox.Top = Height / 2 - gameDeckPicBox.Height / 2;
 
             headerPicBox.Left = gameDeckPicBox.Left;
@@ -472,7 +487,7 @@ namespace Tetris.Gui
             shortcutsGrp.Left = scoreGrp.Left;
             shortcutsGrp.Top = scoreGrp.Top + scoreGrp.Height + verticalSpaceBetweenUiElements;
 
-            holdTetrominoPicBox.Top = gameDeckPicBox.Top+ verticalSpaceBetweenUiElements;
+            holdTetrominoPicBox.Top = gameDeckPicBox.Top + verticalSpaceBetweenUiElements;
             holdTetrominoPicBox.Left = gameDeckPicBox.Left - holdTetrominoPicBox.Width - horizontalSpaceBetweenUiElements;
             holdLbl.Top = gameDeckPicBox.Top;
             holdLbl.Left = holdTetrominoPicBox.Left;
@@ -491,9 +506,9 @@ namespace Tetris.Gui
             }
 
             gameDeckBitmap = new Bitmap(gameDeckwidth, gameDeckHeight, System.Drawing.Imaging.PixelFormat.Format32bppPArgb);
-            nextTetrominoBitmap = new Bitmap(tetrominoWidthHeightBlocks * (blockWidthHeight + spaceBetweenBlocks) + 10, tetrominoWidthHeightBlocks * (blockWidthHeight + spaceBetweenBlocks) *5 + 10, System.Drawing.Imaging.PixelFormat.Format32bppPArgb);
+            nextTetrominoBitmap = new Bitmap(tetrominoWidthHeightBlocks * (blockWidthHeight + spaceBetweenBlocks) + 10, tetrominoWidthHeightBlocks * (blockWidthHeight + spaceBetweenBlocks) * 5 + 10, System.Drawing.Imaging.PixelFormat.Format32bppPArgb);
             headerBitmap = new Bitmap(gameDeckwidth, tetrominoWidthHeightBlocks * (blockWidthHeight + spaceBetweenBlocks) + deckBorderWidth + 1);
-            holdTetrominoBitmap = new Bitmap(tetrominoWidthHeightBlocks * (blockWidthHeight + spaceBetweenBlocks) + 10, tetrominoWidthHeightBlocks * (blockWidthHeight + spaceBetweenBlocks)  + 10, System.Drawing.Imaging.PixelFormat.Format32bppPArgb);
+            holdTetrominoBitmap = new Bitmap(tetrominoWidthHeightBlocks * (blockWidthHeight + spaceBetweenBlocks) + 10, tetrominoWidthHeightBlocks * (blockWidthHeight + spaceBetweenBlocks) + 10, System.Drawing.Imaging.PixelFormat.Format32bppPArgb);
 
             gameDeckPicBox.Image = gameDeckBitmap;
             nextTetrominoPicBox.Image = nextTetrominoBitmap;
@@ -511,10 +526,11 @@ namespace Tetris.Gui
             tetrisGame.Score += TetrisGame_Score;
             tetrisGame.GhostBlocks += TetrisGame_GhostBlocks;
             tetrisGame.HoldTetromino += TetrisGame_HoldTetromino;
+            tetrisGame.GameEvents += TetrisGame_GameEvents;
             deck = new bool[deckWidth, deckHeight];
             DrawBoarder();
             new Thread(DoMovement) { IsBackground = true }.Start();
-            tetrisGame.Start( );
+            tetrisGame.Start();
         }
 
         private void UpdateScores(ScoreEventArgs scoreEventArgs)
@@ -558,6 +574,52 @@ namespace Tetris.Gui
 
                 } while (true);
                 mre.Reset();
+            }
+        }
+
+        private void ProcessGameEvents(GameEventsEventArgs gameEventsEventArgs)
+        {
+
+            switch (gameEventsEventArgs.Event)
+            {
+                case GameEvent.MoveRightSuccessful:
+                    break;
+                case GameEvent.MoveRightFailed:
+                    break;
+                case GameEvent.MoveLeftSuccessful:
+                    break;
+                case GameEvent.MoveLeftFailed:
+                    break;
+                case GameEvent.RotationSuccessful:
+                    break;
+                case GameEvent.RotationFailed:
+                    break;
+                case GameEvent.HoldSuccessful:
+                    break;
+                case GameEvent.HoldFailed:
+                    break;
+                case GameEvent.TetrominoLocked:
+                    break;
+                case GameEvent.OneLineCleared:
+                    break;
+                case GameEvent.TwoLinesCleared:
+                    break;
+                case GameEvent.ThreeLinesCleared:
+                    break;
+                case GameEvent.FourLinesCleared:
+                    break;
+                case GameEvent.HardDrop:
+                    break;
+                case GameEvent.HardDropWithOneLineClear:
+                    break;
+                case GameEvent.HardDropWithTwoLinesClear:
+                    break;
+                case GameEvent.HardDropWithThreeLinesClear:
+                    break;
+                case GameEvent.HardDropWithFourLinesClear:
+                    break;
+                default:
+                    break;
             }
         }
 
